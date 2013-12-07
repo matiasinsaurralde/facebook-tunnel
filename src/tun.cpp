@@ -25,6 +25,7 @@
 #include <netinet/in_systm.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <netinet/tcp.h>
 #include <syslog.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +33,7 @@
 #include <stdio.h>
 
 typedef ip IpHeader;
+typedef tcphdr TcpHeader;
 
 using namespace std;
 
@@ -89,8 +91,13 @@ void Tun::setIp(uint32_t ip, uint32_t destIp, bool includeSubnet)
 
 void Tun::write(const char *buffer, int length)
 {
-    if (tun_write(fd, (char *)buffer, length) == -1)
-        syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));
+  IpHeader *header = (IpHeader *)buffer;
+  TcpHeader *tcpheader = (TcpHeader *)(buffer + header->ip_hl );
+
+  printf("%u:%d -> %u\n", ntohl( header->ip_src.s_addr ), tcpheader->source, ntohl( header->ip_dst.s_addr ));
+
+/*    if (tun_write(fd, (char *)buffer, length) == -1)
+        syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/
 }
 
 int Tun::read(char *buffer)
