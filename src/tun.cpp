@@ -25,7 +25,7 @@
 #include <netinet/in_systm.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
-#define __FAVOR_BSD
+//#define __FAVOR_BSD
 #include <netinet/tcp.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -96,15 +96,14 @@ void Tun::setIp(uint32_t ip, uint32_t destIp, bool includeSubnet)
 void Tun::write(const char *buffer, int length)
 {
   IpHeader *header = (IpHeader *)buffer;
-  TcpHeader *tcpheader = (TcpHeader *)(buffer +14 +20 );
+  TcpHeader *tcpheader = (TcpHeader *)( buffer + sizeof(struct ip) );
 
   string source_ip, dest_ip;
   source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
   dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
 
   printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
-//  printf("Puertos:\t%u <-> %u\n\n", ntohs( tcpheader->th_sport ), ntohs( tcpheader->th_dport ));
-  printf("htons: %d, htonl: %d, ntohs: %d, ntohl: %d\n", htons( tcpheader->th_dport ), htonl( tcpheader->th_dport ), ntohs( tcpheader->th_dport ), ntohl( tcpheader->th_dport ) );
+  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
 
 /*    if (tun_write(fd, (char *)buffer, length) == -1)
         syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/
