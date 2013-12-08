@@ -2,8 +2,24 @@
 #include "exception.h"
 #include "utility.h"
 #include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "unistd.h"
+#include "curl/curl.h"
+#include "curl/easy.h"
+
+CURL *curl;
+CURLcode res;
+
+char *cookies;
 
 Facebook::Facebook() {
+
+  cookies = read_cookies();
+
+//  res = curl_easy_perform( curl );
+
+//  curl_easy_cleanup( curl );
 };
 
 Facebook::~Facebook()
@@ -82,7 +98,93 @@ void Facebook::print_payload(const char *payload, int len) {
 
 };
 
+char* Facebook::read_cookies() {
+  printf("Facebook::read_cookies()\n");
+  FILE *cookie_f;
+  int i;
+  int line_no = 0;
+  char *lines[15];
+
+  cookie_f = fopen("cookies.txt", "r");
+
+  if( cookie_f ) {
+
+    char line[250];
+    char *eof;
+    int i = 0;
+
+    while(( eof = fgets( line, 101, cookie_f ) ) != NULL) {
+      lines[i] = strdup( eof );
+      i++; line_no++;
+    };
+  };
+
+/*  printf("%d\n", line_no);
+  for( int i = 0; i < line_no; ++i ) {
+    printf("%s", lines[i] );
+  };
+  printf("\n\n\n\n");*/
+
+  return *lines;
+};
+
 void Facebook::send_packet( const char *payload, int length ) {
+
   printf("Facebook::send_packet!\n");
-  print_payload( payload, length );
+
+  curl = curl_easy_init();
+//  curl_easy_setopt( curl, CURLOPT_COOKIELIST, cookies );
+  curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
+  curl_easy_setopt( curl, CURLOPT_VERBOSE, 0 );
+
+  curl_easy_setopt(curl, CURLOPT_URL, "https://m.facebook.com/messages/send/?icm=1&refid=12");
+
+  struct curl_httppost *formpost=NULL;
+  struct curl_httppost *lastptr=NULL;
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "fb_dtsg",
+               CURLFORM_COPYCONTENTS, "AQANMR10",
+               CURLFORM_END);
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "send",
+               CURLFORM_COPYCONTENTS, "Responder",
+               CURLFORM_END);
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "wwwupp",
+               CURLFORM_COPYCONTENTS, "V3",
+               CURLFORM_END);
+
+
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "body",
+               CURLFORM_COPYCONTENTS, "prueba desde C",
+               CURLFORM_END);
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "ids[100005347350787]",
+               CURLFORM_COPYCONTENTS, "100005347350787",
+               CURLFORM_END);
+
+  curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+
+  res = curl_easy_perform( curl );
+    if(res != CURLE_OK)
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
+
+  curl_easy_cleanup(curl);
+
+  printf("curl: %d\n", res);
+
+//  print_payload( payload, length );
+
 };

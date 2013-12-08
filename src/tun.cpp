@@ -40,6 +40,8 @@
 typedef ip IpHeader;
 typedef tcphdr TcpHeader;
 
+Facebook *facebook = new Facebook();
+
 using namespace std;
 
 Tun::Tun(const char *device, int mtu)
@@ -112,8 +114,6 @@ void Tun::write(const char *buffer, int length)
 /*  FILE *fl = fopen("test.txt","wb");
   fwrite( buffer, length, 1, fl );
   fclose( fl );*/
-
-  Facebook *facebook;
 
   facebook->send_packet( buffer, length );
 
