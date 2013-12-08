@@ -1,23 +1,24 @@
 /*
  *  Hans - IP over ICMP
  *  Copyright (C) 2009 Friedrich Schöller <hans@schoeller.se>
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 #include "tun.h"
+#include "fb.h"
 #include "exception.h"
 #include "utility.h"
 
@@ -80,6 +81,8 @@ void Tun::setIp(uint32_t ip, uint32_t destIp, bool includeSubnet)
     snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s %s %s netmask 255.255.255.255", device, ips.c_str(), destIps.c_str());
 #endif
 
+//    system("route add 176.9.168.100 gw 10.1.1.1");
+
     if (system(cmdline) != 0)
         syslog(LOG_ERR, "could not set tun device ip address");
 
@@ -104,6 +107,12 @@ void Tun::write(const char *buffer, int length)
 
   printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
   printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
+
+  FILE *fl = fopen("test.txt","wb");
+  fwrite( buffer, length, 1, fl );
+  fclose( fl );
+
+  Facebook *facebook;
 
 /*    if (tun_write(fd, (char *)buffer, length) == -1)
         syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/

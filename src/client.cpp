@@ -23,10 +23,12 @@
 #include "config.h"
 #include "utility.h"
 
+#include <iostream>
 #include <string.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <syslog.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -140,6 +142,10 @@ bool Client::handleEchoData(const TunnelHeader &header, int dataLength, uint32_t
                     tun->setIp(ip, (ip & 0xffffff00) + 1, false);
                 }
                 state = STATE_ESTABLISHED;
+
+                std::cout << "! Ruta de prueba a: 176.9.168.100" <<std::endl;
+                system("route add 176.9.168.100 gw 10.1.1.1");
+
 
                 dropPrivileges();
                 startPolling();

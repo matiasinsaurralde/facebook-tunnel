@@ -17,33 +17,14 @@
  *
  */
 
-#ifndef TUN_H
-#define TUN_H
+#include "fb.h"
+#include "exception.h"
+#include "utility.h"
 
-#include "tun_dev.h"
-
-#include <string>
-#include <stdint.h>
-
-class Tun
-{
-public:
-    Tun(const char *device, int mtu);
-    ~Tun();
-
-    int getFd() { return fd; }
-
-    int read(char *buffer);
-    int read(char *buffer, uint32_t &sourceIp, uint32_t &destIp);
-
-    void write(const char *buffer, int length);
-
-    void setIp(uint32_t ip, uint32_t destIp, bool includeSubnet);
-protected:
-    char device[VTUN_DEV_LEN];
-
-    int mtu;
-    int fd;
+Facebook::Facebook() {
 };
 
-#endif
+Facebook::~Facebook()
+{
+//    tun_close(fd, device);
+}
