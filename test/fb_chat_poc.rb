@@ -10,7 +10,7 @@
 
 require 'nokogiri'
 
-$dest = 'enmanuel.ruffinelli.3'
+$dest = 'jotajotajotajotajotajotajotajotajotajota'
 
 def get( url )
   return `curl -A "Mozilla Firefox" -b cookies.txt -s "#{url}"`
@@ -47,7 +47,7 @@ def send_msg( message, thread )
   post( composer_url, { 'body' => message, "ids[#{tid}]" => tid } )
 end
 
-# th = get_thread_url( $dest )
-th = "/messages/thread/100005347350787/?refid=17"
+th = get_thread_url( $dest )
+# th = "/messages/thread/100005347350787/?refid=17"
 
-send_msg( 'TEST :D', th )
+send_msg( 'mensaje enviado gracias a curl:D', th )
