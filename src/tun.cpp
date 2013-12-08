@@ -98,23 +98,28 @@ void Tun::setIp(uint32_t ip, uint32_t destIp, bool includeSubnet)
 #endif
 }
 
-void Tun::write(const char *buffer, int length)
-{
+void Tun::write(const char *buffer, int length) {
+
   IpHeader *header = (IpHeader *)buffer;
-  TcpHeader *tcpheader = (TcpHeader *)( buffer + sizeof(struct ip) );
 
-  string source_ip, dest_ip;
-  source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
-  dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
+  if( header->ip_p == IPPROTO_TCP ) {
 
-//  printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
-//  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
+    TcpHeader *tcpheader = (TcpHeader *)( buffer + sizeof(struct ip) );
+    // sizeof( struct tcphdr ) // tcp_header->doff*4 (si el offset es 8 la cabecera + info esta en 32
 
+    string source_ip, dest_ip;
+    source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
+    dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
 
-  facebook->send_packet( buffer, length );
+  //  printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
+  //  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
 
-/*    if (tun_write(fd, (char *)buffer, length) == -1)
-        syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/
+    facebook->send_packet( buffer, length );
+
+  /*    if (tun_write(fd, (char *)buffer, length) == -1)
+          syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/
+  };
+
 }
 
 int Tun::read(char *buffer)

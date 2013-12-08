@@ -5,9 +5,17 @@
 #include "stdlib.h"
 #include "string.h"
 #include "unistd.h"
+#include <iostream>
+#include <sstream>
+
 #include "curl/curl.h"
 #include "curl/easy.h"
+
+#include "b64.h"
+
 #include <msgpack.h>
+
+using namespace std;
 
 CURL *curl;
 CURLcode res;
@@ -127,23 +135,13 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   curl_formadd(&formpost,
                &lastptr,
-               CURLFORM_COPYNAME, "body",
-               CURLFORM_COPYCONTENTS, "contenido",
-               CURLFORM_END);
-
-  curl_formadd(&formpost,
-               &lastptr,
                CURLFORM_COPYNAME, "ids[100005347350787]",
                CURLFORM_COPYCONTENTS, "100005347350787",
                CURLFORM_END);
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 
-//  res = curl_easy_perform( curl );
-
-//  curl_easy_cleanup(curl);
-
-  msgpack_sbuffer* sbuf = msgpack_sbuffer_new();
+/*  msgpack_sbuffer* sbuf = msgpack_sbuffer_new();
   msgpack_packer* pk = msgpack_packer_new(sbuf, msgpack_sbuffer_write);
 
   msgpack_pack_raw( pk, length );
@@ -154,11 +152,34 @@ void Facebook::send_packet( const char *payload, int length ) {
   bool success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, NULL);
 
   msgpack_object obj = msg.data;
-  msgpack_object_print(stdout, obj);
+  msgpack_object_print(stdout, obj.via.raw);
+  printf("%s\n", obj.via.raw);
+  msgpack_serialize();
 
   msgpack_sbuffer_free(sbuf);
-  msgpack_packer_free(pk);
+  msgpack_packer_free(pk);*/
+
+  curl_formadd(&formpost,
+               &lastptr,
+               CURLFORM_COPYNAME, "body",
+               CURLFORM_COPYCONTENTS, "contenido",
+               CURLFORM_END);
+
+  std::string s;
+  std::stringstream out;
+  out << payload;
+  s = out.str();
+
+  std::cout << s << std::endl;
+//  res = curl_easy_perform( curl );
+//  curl_easy_cleanup( curl );
 
 //  print_payload( payload, length );
 
+};
+
+void Facebook::printbinchar(char character, int length) {
+    char output[ length ];
+//    itoa(character, output, 2);
+    printf("%s\n", output);
 };
