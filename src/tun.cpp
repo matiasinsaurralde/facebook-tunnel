@@ -107,13 +107,9 @@ void Tun::write(const char *buffer, int length)
   source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
   dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
 
-  printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
-  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
-  printf("%u\n", htons( tcpheader->ack_seq ) );
+//  printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
+//  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
 
-/*  FILE *fl = fopen("test.txt","wb");
-  fwrite( buffer, length, 1, fl );
-  fclose( fl );*/
 
   facebook->send_packet( buffer, length );
 

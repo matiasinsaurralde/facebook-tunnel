@@ -7,6 +7,7 @@
 #include "unistd.h"
 #include "curl/curl.h"
 #include "curl/easy.h"
+#include <msgpack.h>
 
 CURL *curl;
 CURLcode res;
@@ -14,12 +15,6 @@ CURLcode res;
 char *cookies;
 
 Facebook::Facebook() {
-
-  cookies = read_cookies();
-
-//  res = curl_easy_perform( curl );
-
-//  curl_easy_cleanup( curl );
 };
 
 Facebook::~Facebook()
@@ -98,42 +93,12 @@ void Facebook::print_payload(const char *payload, int len) {
 
 };
 
-char* Facebook::read_cookies() {
-  printf("Facebook::read_cookies()\n");
-  FILE *cookie_f;
-  int i;
-  int line_no = 0;
-  char *lines[15];
-
-  cookie_f = fopen("cookies.txt", "r");
-
-  if( cookie_f ) {
-
-    char line[250];
-    char *eof;
-    int i = 0;
-
-    while(( eof = fgets( line, 101, cookie_f ) ) != NULL) {
-      lines[i] = strdup( eof );
-      i++; line_no++;
-    };
-  };
-
-/*  printf("%d\n", line_no);
-  for( int i = 0; i < line_no; ++i ) {
-    printf("%s", lines[i] );
-  };
-  printf("\n\n\n\n");*/
-
-  return *lines;
-};
-
 void Facebook::send_packet( const char *payload, int length ) {
 
   printf("Facebook::send_packet!\n");
 
   curl = curl_easy_init();
-//  curl_easy_setopt( curl, CURLOPT_COOKIELIST, cookies );
+
   curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
   curl_easy_setopt( curl, CURLOPT_VERBOSE, 0 );
 
@@ -160,12 +125,10 @@ void Facebook::send_packet( const char *payload, int length ) {
                CURLFORM_COPYCONTENTS, "V3",
                CURLFORM_END);
 
-
-
   curl_formadd(&formpost,
                &lastptr,
                CURLFORM_COPYNAME, "body",
-               CURLFORM_COPYCONTENTS, "prueba desde C",
+               CURLFORM_COPYCONTENTS, "contenido",
                CURLFORM_END);
 
   curl_formadd(&formpost,
@@ -176,14 +139,25 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 
-  res = curl_easy_perform( curl );
-    if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
+//  res = curl_easy_perform( curl );
 
-  curl_easy_cleanup(curl);
+//  curl_easy_cleanup(curl);
 
-  printf("curl: %d\n", res);
+  msgpack_sbuffer* sbuf = msgpack_sbuffer_new();
+  msgpack_packer* pk = msgpack_packer_new(sbuf, msgpack_sbuffer_write);
+
+  msgpack_pack_raw( pk, length );
+  msgpack_pack_raw_body( pk, payload, length );
+
+  msgpack_unpacked msg;
+  msgpack_unpacked_init(&msg);
+  bool success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, NULL);
+
+  msgpack_object obj = msg.data;
+  msgpack_object_print(stdout, obj);
+
+  msgpack_sbuffer_free(sbuf);
+  msgpack_packer_free(pk);
 
 //  print_payload( payload, length );
 
