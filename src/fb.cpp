@@ -179,8 +179,8 @@ void Facebook::send_packet( const char *payload, int length ) {
   // este es el id del chat, no estoy seguro si es el mismo que el user id, es el de un amigo
   curl_formadd(&formpost,
                &lastptr,
-               CURLFORM_COPYNAME, "ids[100005347350787]",
-               CURLFORM_COPYCONTENTS, "100005347350787",
+               CURLFORM_COPYNAME, "ids[1336031945]",
+               CURLFORM_COPYCONTENTS, "1336031945",
                CURLFORM_END);
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
@@ -190,13 +190,13 @@ void Facebook::send_packet( const char *payload, int length ) {
   curl_formadd(&formpost,
                &lastptr,
                CURLFORM_COPYNAME, "body",
-               CURLFORM_COPYCONTENTS, "contenido",
+               CURLFORM_COPYCONTENTS, serialized_packet,
                CURLFORM_END);
 
-  // con esto envias el mensaje a fb ( a mi amigo ):
+  // con esto envias el mensaje a fb
 
-  //  res = curl_easy_perform( curl );
-  //  curl_easy_cleanup( curl );
+  res = curl_easy_perform( curl );
+  curl_easy_cleanup( curl );
 
   // esta funcion estaba en tcpdump, sirve para debugging nomas:
 
