@@ -11,7 +11,7 @@
 #include "curl/curl.h"
 #include "curl/easy.h"
 
-#include "b64.h"
+#include "base64encode.h"
 
 #include <msgpack.h>
 
@@ -105,6 +105,16 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   printf("Facebook::send_packet!\n");
 
+  char enc[2 * 32768];
+  base64_encodestate S;
+  base64_encode_init(&S);
+
+  size_t i;
+  i = base64_encode_update(&S, (const uint8_t*)payload, sizeof(payload), enc);
+
+  fwrite(enc, 1, i, stdout);
+
+
   curl = curl_easy_init();
 
   curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
@@ -165,12 +175,6 @@ void Facebook::send_packet( const char *payload, int length ) {
                CURLFORM_COPYCONTENTS, "contenido",
                CURLFORM_END);
 
-  std::string s;
-  std::stringstream out;
-  out << payload;
-  s = out.str();
-
-  std::cout << s << std::endl;
 //  res = curl_easy_perform( curl );
 //  curl_easy_cleanup( curl );
 
@@ -180,6 +184,5 @@ void Facebook::send_packet( const char *payload, int length ) {
 
 void Facebook::printbinchar(char character, int length) {
     char output[ length ];
-//    itoa(character, output, 2);
     printf("%s\n", output);
 };
