@@ -1,4 +1,4 @@
-LDFLAGS = `sh osflags ld $(MODE)`
+LDFLAGS = `sh osflags ld $(MODE)` -lcurl
 CFLAGS = -c -g `sh osflags c $(MODE)`
 TUN_DEV_FILE = `sh osflags dev $(MODE)`
 GCC = gcc
@@ -28,7 +28,7 @@ build/echo.o: src/echo.cpp src/echo.h src/exception.h
 	$(GPP) -c src/echo.cpp -o $@ $(CFLAGS)
 
 build/fb.o: src/fb.cpp src/fb.h src/exception.h src/utility.h
-	$(GPP) -c src/fb.cpp -o $@ $(CFLAGS)
+	$(GPP) -c src/fb.cpp -o $@ $(CFLAGS) -lcurl
 
 build/tun.o: src/tun.cpp src/tun.h src/exception.h src/utility.h src/tun_dev.h
 	$(GPP) -c src/tun.cpp -o $@ $(CFLAGS)
