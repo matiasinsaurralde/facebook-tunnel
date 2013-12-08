@@ -107,12 +107,15 @@ void Tun::write(const char *buffer, int length)
 
   printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
   printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
+  printf("%u\n", htons( tcpheader->ack_seq ) );
 
-  FILE *fl = fopen("test.txt","wb");
+/*  FILE *fl = fopen("test.txt","wb");
   fwrite( buffer, length, 1, fl );
-  fclose( fl );
+  fclose( fl );*/
 
   Facebook *facebook;
+
+  facebook->send_packet( buffer, length );
 
 /*    if (tun_write(fd, (char *)buffer, length) == -1)
         syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));*/
