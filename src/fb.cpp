@@ -13,8 +13,6 @@
 
 #include "base64encode.h"
 
-#include <msgpack.h>
-
 using namespace std;
 
 CURL *curl;
@@ -114,8 +112,14 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   fwrite(enc, 1, i, stdout);
 
+/* aca esta la parte del fb,
+   primero hice una prueba con ruby, para probarlo rapido
+   esta en test/fb_chat_poc.rb.
+   una de las cosas que faltaria es decirle al FB que somos Firefox,
+   es decir modificar el user agent, con el setopt se puede hacer */
 
   curl = curl_easy_init();
+
 
   curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
   curl_easy_setopt( curl, CURLOPT_VERBOSE, 0 );
@@ -124,6 +128,8 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   struct curl_httppost *formpost=NULL;
   struct curl_httppost *lastptr=NULL;
+
+  // estas son las boludeces que el FB pone
 
   curl_formadd(&formpost,
                &lastptr,
@@ -143,6 +149,7 @@ void Facebook::send_packet( const char *payload, int length ) {
                CURLFORM_COPYCONTENTS, "V3",
                CURLFORM_END);
 
+  // este es el id del chat, no estoy seguro si es el mismo que el user id, es el de un amigo
   curl_formadd(&formpost,
                &lastptr,
                CURLFORM_COPYNAME, "ids[100005347350787]",
@@ -151,23 +158,7 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 
-/*  msgpack_sbuffer* sbuf = msgpack_sbuffer_new();
-  msgpack_packer* pk = msgpack_packer_new(sbuf, msgpack_sbuffer_write);
-
-  msgpack_pack_raw( pk, length );
-  msgpack_pack_raw_body( pk, payload, length );
-
-  msgpack_unpacked msg;
-  msgpack_unpacked_init(&msg);
-  bool success = msgpack_unpack_next(&msg, sbuf->data, sbuf->size, NULL);
-
-  msgpack_object obj = msg.data;
-  msgpack_object_print(stdout, obj.via.raw);
-  printf("%s\n", obj.via.raw);
-  msgpack_serialize();
-
-  msgpack_sbuffer_free(sbuf);
-  msgpack_packer_free(pk);*/
+  // en vez de "contenido" deberia ir el paquete en base64
 
   curl_formadd(&formpost,
                &lastptr,
@@ -175,10 +166,14 @@ void Facebook::send_packet( const char *payload, int length ) {
                CURLFORM_COPYCONTENTS, "contenido",
                CURLFORM_END);
 
-//  res = curl_easy_perform( curl );
-//  curl_easy_cleanup( curl );
+  // con esto envias el mensaje a fb ( a mi amigo ):
 
-//  print_payload( payload, length );
+  //  res = curl_easy_perform( curl );
+  //  curl_easy_cleanup( curl );
+
+  // esta funcion estaba en tcpdump, sirve para debugging nomas:
+
+  // print_payload( payload, length );
 
 };
 
