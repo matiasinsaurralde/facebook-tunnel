@@ -8,10 +8,21 @@
 #include <iostream>
 #include <sstream>
 
+#include <arpa/inet.h>
+#include <netinet/in_systm.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 #include "curl/curl.h"
 #include "curl/easy.h"
 
 #include "base64encode.h"
+
+typedef ip IpHeader;
+typedef tcphdr TcpHeader;
 
 using namespace std;
 
@@ -103,6 +114,18 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   printf("Facebook::send_packet!\n");
 
+  IpHeader *header = (IpHeader *)payload;
+  TcpHeader *tcpheader = (TcpHeader *)( payload + sizeof(struct ip) );
+
+  string source_ip, dest_ip;
+  source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
+  dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
+
+//  printf("%s -> %s\n", source_ip.c_str(), dest_ip.c_str() )
+
+  // length = 2 IPs + 2 puertos + 4 separadores
+  char serialized_packet[ 30 + 10 + 4 + sizeof( payload ) ];
+
   char enc[2 * 32768];
   base64_encodestate S;
   base64_encode_init(&S);
@@ -110,7 +133,11 @@ void Facebook::send_packet( const char *payload, int length ) {
   size_t i;
   i = base64_encode_update(&S, (const uint8_t*)payload, sizeof(payload), enc);
 
-  fwrite(enc, 1, i, stdout);
+  sprintf( serialized_packet, "%s,%d,%s,%d,%s", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
+
+  puts( serialized_packet );
+
+//  fwrite(enc, 1, i, stdout);
 
 /* aca esta la parte del fb,
    primero hice una prueba con ruby, para probarlo rapido

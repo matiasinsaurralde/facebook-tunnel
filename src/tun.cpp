@@ -104,12 +104,7 @@ void Tun::write(const char *buffer, int length) {
 
   if( header->ip_p == IPPROTO_TCP ) {
 
-    TcpHeader *tcpheader = (TcpHeader *)( buffer + sizeof(struct ip) );
-    // sizeof( struct tcphdr ) // tcp_header->doff*4 (si el offset es 8 la cabecera + info esta en 32
-
-    string source_ip, dest_ip;
-    source_ip = Utility::formatIp( ntohl( header->ip_src.s_addr ) );
-    dest_ip = Utility::formatIp( ntohl( header->ip_dst.s_addr ) );
+  // sizeof( struct tcphdr ) // tcp_header->doff*4 (si el offset es 8 la cabecera + info esta en 32
 
   //  printf("Paquete:\t%s -> %s\n", dest_ip.c_str(), source_ip.c_str() );
   //  printf("Puertos:\t%u <-> %u\n\n", htons( tcpheader->dest ), htons( tcpheader->source ));
