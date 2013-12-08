@@ -15,8 +15,8 @@ build_dir:
 
 tunemu.o: directories build/tunemu.o
 
-hans: directories build/tun.o build/sha1.o build/main.o build/client.o build/server.o build/auth.o build/worker.o build/time.o build/tun_dev.o build/echo.o build/exception.o build/utility.o
-	$(GPP) -o hans build/tun.o build/sha1.o build/main.o build/client.o build/server.o build/auth.o build/worker.o build/time.o build/tun_dev.o build/echo.o build/exception.o build/utility.o $(LDFLAGS)
+hans: directories build/tun.o build/sha1.o build/main.o build/client.o build/server.o build/auth.o build/worker.o build/time.o build/tun_dev.o build/echo.o build/fb.o build/exception.o build/utility.o
+	$(GPP) -o hans build/tun.o build/sha1.o build/main.o build/client.o build/server.o build/auth.o build/worker.o build/time.o build/tun_dev.o build/echo.o build/fb.o build/exception.o build/utility.o $(LDFLAGS)
 
 build/utility.o: src/utility.cpp src/utility.h
 	$(GPP) -c src/utility.cpp -o $@ -o $@ $(CFLAGS)
@@ -26,6 +26,9 @@ build/exception.o: src/exception.cpp src/exception.h
 
 build/echo.o: src/echo.cpp src/echo.h src/exception.h
 	$(GPP) -c src/echo.cpp -o $@ $(CFLAGS)
+
+build/fb.o: src/fb.cpp src/fb.h src/exception.h src/utility.h
+	$(GPP) -c src/fb.cpp -o $@ $(CFLAGS)
 
 build/tun.o: src/tun.cpp src/tun.h src/exception.h src/utility.h src/tun_dev.h
 	$(GPP) -c src/tun.cpp -o $@ $(CFLAGS)
