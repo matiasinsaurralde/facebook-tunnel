@@ -1,4 +1,4 @@
-LDFLAGS = `sh osflags ld $(MODE)` -lcurl -lmsgpack
+LDFLAGS = `sh osflags ld $(MODE)` -lcurl
 CFLAGS = -c -g `sh osflags c $(MODE)`
 TUN_DEV_FILE = `sh osflags dev $(MODE)`
 GCC = gcc
