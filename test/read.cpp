@@ -39,7 +39,7 @@ int main( int argc, char *argv[] ) {
 
     curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write );
 
-    res = curl_easy_perform(curl);
+    curl_easy_perform(curl);
 
     doc.Parse( rawBody.c_str() );
 
