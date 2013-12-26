@@ -10,7 +10,7 @@
 
 require 'nokogiri'
 
-$dest = 'enmanuel.ruffinelli.3'
+$dest = 'someusername'
 
 def get( url )
   return `curl -A "Mozilla Firefox" -b cookies.txt -s "#{url}"`
@@ -48,6 +48,8 @@ def send_msg( message, thread )
 end
 
 th = get_thread_url( $dest )
-# th = "/messages/thread/100005347350787/?refid=17"
+p th
+exit
+# th = "/messages/thread/xxxxxxxxxxx/?refid=17"
 
 send_msg( 'asd', th )
