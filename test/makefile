@@ -10,7 +10,7 @@ replay:
 	gcc replay.c -o replay
 
 read:
-	g++ read.cpp -o read tinyxml2.cpp -lcurl
+	g++ read.cpp -o read -lcurl -lgumbo
 
 clean:
 	rm -f req_test parse replay read
