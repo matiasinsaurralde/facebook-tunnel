@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <curl/curl.h>
 #include <syslog.h>
 #include <string.h>
@@ -12,20 +13,25 @@ class FacebookClient {
     FacebookClient();
     ~FacebookClient();
 
-    bool authenticate( const char* login, const char* password );
+    bool authenticate( const char*, const char* );
+
+    int getFriendID( const char* );
 
   public:
-    size_t curl_write( void *ptr, size_t size, size_t nmemb, void *stream);
+    size_t curl_write( void *, size_t, size_t, void *);
 
   protected:
 
     CURL* curl;
 
+    void cleanup();
+
     std::string pageBuffer;
 
-    std::string sendRequest( const char* url );
+    std::string sendRequest( const char* );
 
     void extractFormData(GumboNode*);
+    void extractLinks(GumboNode*);
 
     struct curl_httppost *loginForm = NULL;
     struct curl_httppost *loginFormLastPtr = NULL;
