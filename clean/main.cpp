@@ -7,8 +7,17 @@
 using namespace std;
 
 #define VERSION_NUMBER "1.0"
+#define SERVER_MODE 0
+#define CLIENT_MODE 1
 
 static int verbose_flag;
+
+static int mode;
+
+#define eprintf(format, ...) do {               \
+  if ( verbose_flag )                           \
+    fprintf( stderr, format, ##__VA_ARGS__ );   \
+} while(0)
 
 void help() {
   cout << "facebook-tunnel " << VERSION_NUMBER << endl << endl;
@@ -24,7 +33,16 @@ void help() {
 
 int main( int argc, char **argv ) {
 
+  const char* login = NULL;
+  const char* password = NULL;
+  const char* friendName = NULL;
+
   int c;
+
+  if( argc < 4 ) {
+    help();
+    exit(1);
+  };
 
   while (1) {
     static struct option long_options[] = {
@@ -37,41 +55,37 @@ int main( int argc, char **argv ) {
              };
 
     int option_index = 0;
-    c = getopt_long (argc, argv, "pfl:::", long_options, &option_index);
-    if (c == -1) {
+    c = getopt_long (argc, argv, "f:p:l:", long_options, &option_index);
+
+    if (c == -1 ) {
       break;
     };
+
     switch (c) {
 
       case 0:
-         /* flag */
+
         if (long_options[option_index].flag != 0)
           break;
+
         printf ("option %s", long_options[option_index].name);
+
         if (optarg)
-          rintf (" with arg %s", optarg);
+         printf (" with arg %s", optarg);
          printf ("\n");
 
          break;
 
       case 'l':
-        puts ("option -l %s\n", optarg);
+        login = optarg;
         break;
 
-      case 'b':
-        puts ("option -b\n");
-        break;
-
-      case 'c':
-        printf ("option -c val `%s'\n", optarg);
-        break;
-
-      case 'd':
-        printf ("option -d val `%s'\n", optarg);
+      case 'p':
+        password = optarg;
         break;
 
       case 'f':
-        printf ("option -f with value `%s'\n", optarg);
+        friendName = optarg;
         break;
 
       case '?':
@@ -80,5 +94,20 @@ int main( int argc, char **argv ) {
       default:
         abort ();
     };
+
   };
+
+  if( login == NULL || password == NULL ) {
+    printf("Credentials are required!\n");
+    exit(1);
+  };
+
+  if( friendName == NULL ) {
+    mode = SERVER_MODE;
+  } else {
+    mode = CLIENT_MODE;
+  };
+
+  eprintf( "Setting mode: %d\n", mode );
+
 };
