@@ -14,6 +14,34 @@ size_t curl_write( void *ptr, size_t size, size_t nmemb, void *stream) {
   return size*nmemb;
 };
 
+static std::string cleantext(GumboNode* node) {
+  if (node->type == GUMBO_NODE_TEXT) {
+    return std::string(node->v.text.text);
+  } else if (node->type == GUMBO_NODE_ELEMENT &&
+             node->v.element.tag != GUMBO_TAG_SCRIPT &&
+             node->v.element.tag != GUMBO_TAG_STYLE) {
+    std::string contents = "";
+    GumboVector* children = &node->v.element.children;
+    for (int i = 0; i < children->length; ++i) {
+      const std::string text = cleantext((GumboNode*) children->data[i]);
+      if (i != 0 && !text.empty()) {
+        contents.append(" ");
+      }
+      contents.append(text);
+    }
+
+   string identChar = "|";
+    if( contents.compare( 0, 1, identChar ) == 0 ) {
+      return contents;
+    } else {
+      return "";
+    };
+
+  } else {
+    return "";
+  }
+}
+
 static void find_messages(GumboNode* node) {
 
   if (node->type != GUMBO_NODE_ELEMENT) {
@@ -22,17 +50,16 @@ static void find_messages(GumboNode* node) {
 
   GumboAttribute* classN;
 
-  if (node->v.element.tag == GUMBO_TAG_DIV && ( classN = gumbo_get_attribute(&node->v.element.attributes, "class") ) ) {
-
-    if( string( classN->value ).find("msg") != string::npos ) {
-      printf("es un msg!\n");
+  if (node->v.element.tag == GUMBO_TAG_SPAN ) {
+    std::string messageBody = cleantext( node );
+    if( messageBody.size() > 0 ) {
+      std::cout << messageBody << std::endl;
     };
-
   };
 
   GumboVector* children = &node->v.element.children;
   for (int i = 0; i < children->length; ++i) {
-    find_messages(static_cast<GumboNode*>(children->data[i]));
+    find_messages(static_cast<GumboNode*>(children->data[i]) );
   }
 
 };
