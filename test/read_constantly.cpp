@@ -3,11 +3,12 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <vector>
 #include <string.h>
 
 #include "gumbo.h"
 
-std::list<int> packetIDs;
+std::vector<int> packetIDs;
 
 using namespace std;
 
@@ -30,7 +31,7 @@ static std::string cleantext(GumboNode* node) {
       const std::string text = cleantext((GumboNode*) children->data[i]);
       if (i != 0 && !text.empty()) {
         contents.append(" ");
-      }
+      };
       contents.append(text);
     }
 
@@ -62,9 +63,34 @@ static void find_messages(GumboNode* node) {
 
       messageBody.erase( 0, 1 );
       std::stringstream ss( messageBody );
-/*      while( std::getline( ss, messageBody, ',' ) {
-      };*/
-      std::cout << messageBody << std::endl;
+
+      int index = 0;
+      int packetID;
+
+      while( std::getline( ss, messageBody, ',' ) ) {
+        switch( index ) {
+          case 0:
+            //std::cout << "Packet timestamp: " << messageBody << std::endl;
+            std::istringstream iss( messageBody );
+            iss >> packetID;
+        };
+        //std::cout << index << messageBody << std::endl;
+        index++;
+      };
+
+      bool exists = std::binary_search( packetIDs.begin(), packetIDs.end(), packetID );
+
+      if( exists == 0 ) {
+
+        std::cout << "New packet!  " << packetID << std::endl;
+
+        // take care of the package & push
+
+        packetIDs.push_back( packetID );
+
+        std::cout << std::endl;
+
+      };
     };
   };
 
@@ -99,12 +125,17 @@ int main( int argc, char *argv[] ) {
 
     curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write );
 
-    curl_easy_perform(curl);
+    for(;;) {
 
-    GumboOutput* html = gumbo_parse( rawBody.c_str() );
-    find_messages( html->root );
-    gumbo_destroy_output(&kGumboDefaultOptions, html);
+      rawBody = "";
 
+      curl_easy_perform(curl);
+
+      GumboOutput* html = gumbo_parse( rawBody.c_str() );
+      find_messages( html->root );
+      gumbo_destroy_output(&kGumboDefaultOptions, html);
+
+    };
 
   };
 
