@@ -34,7 +34,7 @@ FacebookClient::FacebookClient() {
 
   curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, s_curl_write );
   curl_easy_setopt( curl, CURLOPT_WRITEDATA, this );
-  curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "");
+  curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
 
 };
 
@@ -44,6 +44,18 @@ FacebookClient::~FacebookClient() {
 size_t FacebookClient::curl_write( void *ptr, size_t size, size_t nmemb, void *stream) {
   pageBuffer.append( (char*)ptr, size*nmemb );
   return size*nmemb;
+};
+
+void FacebookClient::extractLinks(GumboNode* node) {
+  if (node->type != GUMBO_NODE_ELEMENT) {
+    return;
+  }
+
+  if (node->v.element.tag == GUMBO_TAG_A ) {
+    GumboAttribute* hrefAttr;
+    hrefAttr = gumbo_get_attribute( &node->v.element.attributes, "href" );
+    std::cout << hrefAttr->value << std::endl;
+  };
 };
 
 void FacebookClient::extractFormData(GumboNode* node ) {
@@ -126,8 +138,6 @@ bool FacebookClient::authenticate( const char* login, const char* password ) {
 
   curl_easy_perform( curl );
 
-  printf("%s\n", pageBuffer.c_str() );
-
   struct curl_slist *nc;
 
   int index;
@@ -153,11 +163,48 @@ bool FacebookClient::authenticate( const char* login, const char* password ) {
   };
 
   if( result ) {
+
     syslog( LOG_DEBUG, "authenticate(): successful!" );
+
+    std::ofstream cookieTempF("cookies.txt");
+    cookieTempF << rawCookies;
+    cookieTempF.close();
+
   } else {
     syslog( LOG_DEBUG, "authenticate(): failed." );
   };
 
   return result;
+
+};
+
+void FacebookClient::cleanup() {
+
+  pageBuffer = "";
+  curl_easy_cleanup( curl );
+  curl = curl_easy_init();
+
+  curl_easy_setopt( curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0");
+  curl_easy_setopt( curl, CURLOPT_COOKIEFILE, "cookies.txt");
+
+  curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, s_curl_write );
+  curl_easy_setopt( curl, CURLOPT_WRITEDATA, this );
+
+};
+
+int FacebookClient::getFriendID( const char* name ) {
+
+  char* friendUrl;
+  sprintf( friendUrl, "https://m.facebook.com/%s", name	 );
+
+  printf("url: %s\n", friendUrl );
+
+  cleanup();
+
+  curl_easy_setopt( curl, CURLOPT_URL, friendUrl );
+
+  curl_easy_perform( curl );
+
+  printf("%s\n", pageBuffer.c_str() );
 
 };
