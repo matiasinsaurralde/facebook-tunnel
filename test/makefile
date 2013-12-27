@@ -11,9 +11,10 @@ replay:
 
 read:
 	g++ read.cpp -o read -lcurl -lgumbo
+	g++ read_constantly.cpp -o read_constantly -lcurl -lgumbo
 
 login:
 	g++ -std=c++11 login.cpp -o login -lcurl -lgumbo
 
 clean:
-	rm -f req_test parse replay read login
+	rm -f req_test parse replay read read_constantly login
