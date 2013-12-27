@@ -158,10 +158,10 @@ void Facebook::send_packet( const char *payload, int length ) {
 
   // estas son las boludeces que el FB pone
 
-  curl_formadd(&formpost,
+  curl_formadd(&formpost,				/* fixme: al parecer esto varia en cada login */
                &lastptr,
                CURLFORM_COPYNAME, "fb_dtsg",
-               CURLFORM_COPYCONTENTS, "AQANMR10",
+               CURLFORM_COPYCONTENTS, "AQAog8Qn",
                CURLFORM_END);
 
   curl_formadd(&formpost,
@@ -179,8 +179,8 @@ void Facebook::send_packet( const char *payload, int length ) {
   // este es el id del chat, no estoy seguro si es el mismo que el user id, es el de un amigo
   curl_formadd(&formpost,
                &lastptr,
-               CURLFORM_COPYNAME, "ids[1336031945]",
-               CURLFORM_COPYCONTENTS, "1336031945",
+               CURLFORM_COPYNAME, "ids[1139968251]",
+               CURLFORM_COPYCONTENTS, "1139968251",
                CURLFORM_END);
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
