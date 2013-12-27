@@ -16,6 +16,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include <ctime>
+
 #include "curl/curl.h"
 #include "curl/easy.h"
 
@@ -133,7 +135,10 @@ void Facebook::send_packet( const char *payload, int length ) {
   size_t i;
   i = base64_encode_update(&S, (const uint8_t*)payload, sizeof(payload), enc);
 
-  sprintf( serialized_packet, "%s,%d,%s,%d,%s", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
+  std::time_t t = std::time(0);
+  std::cout << t << std::endl;
+
+  sprintf( serialized_packet, "|%s,%d,%s,%d,%s", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
 
   puts( serialized_packet );
 
