@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <curl/curl.h>
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 #include <string.h>
 
 #include "gumbo.h"
+
+std::list<int> packetIDs;
 
 using namespace std;
 
@@ -51,8 +55,15 @@ static void find_messages(GumboNode* node) {
   GumboAttribute* classN;
 
   if (node->v.element.tag == GUMBO_TAG_SPAN ) {
+
     std::string messageBody = cleantext( node );
+
     if( messageBody.size() > 0 ) {
+
+      messageBody.erase( 0, 1 );
+      std::stringstream ss( messageBody );
+/*      while( std::getline( ss, messageBody, ',' ) {
+      };*/
       std::cout << messageBody << std::endl;
     };
   };
