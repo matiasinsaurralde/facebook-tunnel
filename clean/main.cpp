@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "facebook.h"
+#include "tun.h"
 
 using namespace std;
 
@@ -110,9 +111,31 @@ int main( int argc, char **argv ) {
 
   syslog( LOG_DEBUG, "Setting mode: %d", mode );
 
-  FacebookClient* facebook = new FacebookClient();
 
-  facebook->authenticate( login, password );
+/*  FacebookClient* facebook = new FacebookClient();
+
+  bool authSuccess = facebook->authenticate( login, password );
+
+  if( !authSuccess ) {
+    cout << "Authentication error!" << endl;
+    exit(1);
+  };
+*/
+
+
+  int alive = true;
+
+  int mtu = 1500;
+  const char *device = "tun0";
+  Tun* tunnel = new Tun( device, mtu );
+
+  char buf[mtu];
+  while( alive ) {
+    int length = tunnel->read( buf );
+    if( length > 0 ) {
+      printf("%d\n", length );
+    };
+  };
 
   return 0;
 
