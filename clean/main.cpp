@@ -104,14 +104,16 @@ int main( int argc, char **argv ) {
 
   openlog(argv[0], LOG_PERROR, LOG_DAEMON);
 
- if (!verboseFlag)
-   setlogmask(LOG_UPTO(LOG_INFO));
+  if (!verboseFlag)
+    setlogmask(LOG_UPTO(LOG_INFO));
 
 
   syslog( LOG_DEBUG, "Setting mode: %d", mode );
 
-  FacebookClient* facebook;
+  FacebookClient* facebook = new FacebookClient();
 
   facebook->authenticate( login, password );
+
+  return 0;
 
 };
