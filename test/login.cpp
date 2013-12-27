@@ -2,7 +2,6 @@
 #include <curl/curl.h>
 #include <sys/time.h>
 #include <iostream>
-#include <regex>
 #include <string>
 
 #include "gumbo.h"
@@ -33,7 +32,7 @@ static void curl_print_cookies(CURL *curl)
   }
   nc = cookies, i = 1;
   while (nc) {
-    printf("[%d]: %s\n", i, nc->data);
+    printf("%s\n", nc->data);
     nc = nc->next;
     i++;
   }
