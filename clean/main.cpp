@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <syslog.h>
 
 #include <iostream>
+
+#include "facebook.h"
 
 using namespace std;
 
@@ -10,14 +13,9 @@ using namespace std;
 #define SERVER_MODE 0
 #define CLIENT_MODE 1
 
-static int verbose_flag;
+static int verboseFlag;
 
 static int mode;
-
-#define eprintf(format, ...) do {               \
-  if ( verbose_flag )                           \
-    fprintf( stderr, format, ##__VA_ARGS__ );   \
-} while(0)
 
 void help() {
   cout << "facebook-tunnel " << VERSION_NUMBER << endl << endl;
@@ -46,8 +44,8 @@ int main( int argc, char **argv ) {
 
   while (1) {
     static struct option long_options[] = {
-               {"verbose", no_argument, &verbose_flag, 1},
-               {"quiet",   no_argument, &verbose_flag, 0},
+               {"verbose", no_argument, &verboseFlag, 1},
+               {"quiet",   no_argument, &verboseFlag, 0},
                {"login",     required_argument, 0, 'l'},
                {"password", required_argument, 0, 'p'},
                {"friend",  required_argument, 0, 'f'},
@@ -68,11 +66,7 @@ int main( int argc, char **argv ) {
         if (long_options[option_index].flag != 0)
           break;
 
-        printf ("option %s", long_options[option_index].name);
-
         if (optarg)
-         printf (" with arg %s", optarg);
-         printf ("\n");
 
          break;
 
@@ -98,7 +92,7 @@ int main( int argc, char **argv ) {
   };
 
   if( login == NULL || password == NULL ) {
-    printf("Credentials are required!\n");
+    cout << "Credentials are required!\n" << endl;
     exit(1);
   };
 
@@ -108,6 +102,16 @@ int main( int argc, char **argv ) {
     mode = CLIENT_MODE;
   };
 
-  eprintf( "Setting mode: %d\n", mode );
+  openlog(argv[0], LOG_PERROR, LOG_DAEMON);
+
+ if (!verboseFlag)
+   setlogmask(LOG_UPTO(LOG_INFO));
+
+
+  syslog( LOG_DEBUG, "Setting mode: %d", mode );
+
+  FacebookClient* facebook;
+
+  facebook->authenticate( login, password );
 
 };
