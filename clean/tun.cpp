@@ -69,57 +69,47 @@ int Tun::allocate( const char *device ) {
   return fd;
 }
 
-void Tun::setup( const char* device, int mtu ) {
+void Tun::setup( const char* device ) {
 
   char cmdl[512];
-  snprintf(cmdl, sizeof(cmdl), "/sbin/ifconfig %s mtu %u", device, mtu);
+  snprintf(cmdl, sizeof(cmdl), "/sbin/ifconfig %s mtu %u", device, this->mtu);
 
   if (system(cmdl) != 0)
       syslog(LOG_ERR, "could not set tun device mtu");
+
+  this->device = device;
 };
 
-Tun::Tun(const char *device, int mtu ) {
+Tun::Tun(const char *device, int mtu, int mode ) {
 
-  int fd = allocate( device );
-  std::cout << device << std::endl;
-  setup( device, mtu );
+  this->fd = allocate( device );
+  this->mtu = mtu;
+  this->mode = mode;
+
+  setup( device );
+
+  setIp();
+
+  syslog( LOG_DEBUG, "Tun interface up!" );
 
 };
 
-Tun::~Tun()
-{
+Tun::~Tun() {
     tun_close(fd, device);
 }
 
-void Tun::setIp(uint32_t ip, uint32_t destIp, bool includeSubnet)
-{
-    char cmdline[512];
-/*    string ips = Utility::formatIp(ip);
-    string destIps = Utility::formatIp(destIp);
+void Tun::setIp() {
 
-#ifdef LINUX
-    snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s %s netmask 255.255.255.0", device, ips.c_str());
-#else
-    snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s %s %s netmask 255.255.255.255", device, ips.c_str(), destIps.c_str());
-#endif
-*/
-/*
+printf("modeeeee: %d\n", mode);
+
+    char cmdline[512];
+    snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s 10.1.1.1 netmask 255.255.255.0", this->device);
     if (system(cmdline) != 0)
         syslog(LOG_ERR, "could not set tun device ip address");
 
-#ifndef LINUX
-    if (includeSubnet)
-    {
-        snprintf(cmdline, sizeof(cmdline), "/sbin/route add %s/24 %s", destIps.c_str(), destIps.c_str());
-        if (system(cmdline) != 0)
-            syslog(LOG_ERR, "could not add route");
-    }
-#endif
-*/
-}
+};
 
-void Tun::write(const char *buffer, int length)
-{
+void Tun::write(const char *buffer, int length) {
     if (tun_write(fd, (char *)buffer, length) == -1)
         syslog(LOG_ERR, "error writing %d bytes to tun: %s", length, strerror(errno));
 }

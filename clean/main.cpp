@@ -127,14 +127,18 @@ int main( int argc, char **argv ) {
 
   int mtu = 1500;
   const char *device = "tun0";
-  Tun* tunnel = new Tun( device, mtu );
+  Tun* tunnel = new Tun( device, mtu, mode );
 
-  char buf[mtu];
+  int length = 0;
+  char buf[ mtu ];
+
   while( alive ) {
-    int length = tunnel->read( buf );
+
+    length = tunnel->read( buf );
     if( length > 0 ) {
-      printf("%d\n", length );
+      printf("paquete! %d\n", length );
     };
+
   };
 
   return 0;
