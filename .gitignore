@@ -2,3 +2,4 @@ build/
 hans
 cookies.txt
 tmp/
+*.o
