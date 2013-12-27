@@ -1,6 +1,6 @@
 #include "facebook.h"
 
-static void test(void *buffer, size_t sz, size_t n, void *f) {
+static void s_curl_write(void *buffer, size_t sz, size_t n, void *f) {
   static_cast<FacebookClient*>(f)->curl_write( buffer, sz, n, f );
 };
 
@@ -10,7 +10,7 @@ FacebookClient::FacebookClient() {
 
   curl_easy_setopt( curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0");
 
-  curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, test );
+  curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, s_curl_write );
   curl_easy_setopt( curl, CURLOPT_WRITEDATA, this );
 
 };
@@ -44,5 +44,7 @@ bool FacebookClient::authenticate( const char* login, const char* password ) {
   fillCSRF();
 
   sendRequest( "https://matias.insaurral.de/" );
+
+  printf("%s\n", pageBuffer.c_str() );
 
 };
