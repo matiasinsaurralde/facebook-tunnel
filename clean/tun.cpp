@@ -102,7 +102,7 @@ Tun::~Tun() {
 
 void Tun::setIp() {
 
-printf("modeeeee: %d\n", mode);
+    // take mode in account
 
     char cmdline[512];
     snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s 10.1.1.1 netmask 255.255.255.0", this->device);

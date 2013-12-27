@@ -135,6 +135,8 @@ int main( int argc, char **argv ) {
   int length = 0;
   char buf[ mtu ];
 
+  cout << "Ready and waiting for packets." << endl;
+
   while( alive ) {
 
     length = tunnel->read( buf );
