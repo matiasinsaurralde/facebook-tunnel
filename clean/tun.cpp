@@ -49,7 +49,8 @@ int Tun::allocate( char* device ) {
   struct ifreq ifr;
   int fd, err;
 
-  char *cldev = "/dev/net/tun";
+  char cldev[32];
+  strcpy( cldev, "/dev/net/tun" );
 
   if( ( fd = open( cldev, O_RDWR ) ) < 0 ) {
     return fd;
