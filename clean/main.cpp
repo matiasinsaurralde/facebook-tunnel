@@ -126,7 +126,7 @@ int main( int argc, char **argv ) {
   int alive = true;
 
   int mtu = 1500;
-  const char *device = "tun0";
+  char* device = "tun0";
   Tun* tunnel = new Tun( device, mtu, mode );
 
   int length = 0;

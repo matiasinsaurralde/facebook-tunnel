@@ -29,9 +29,9 @@ class Tun
 {
 public:
 
-    Tun(const char *device, int mtu, int mode);
-    int allocate(const char*);
-    void setup( const char* );
+    Tun(char* device, int mtu, int mode);
+    int allocate(char*);
+    void setup(char* );
     ~Tun();
 
     int getFd() { return fd; }

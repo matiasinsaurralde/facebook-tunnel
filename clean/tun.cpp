@@ -44,7 +44,7 @@ typedef ip IpHeader;
 
 using namespace std;
 
-int Tun::allocate( const char *device ) {
+int Tun::allocate( char* device ) {
 
   struct ifreq ifr;
   int fd, err;
@@ -66,21 +66,22 @@ int Tun::allocate( const char *device ) {
     printf("err: %d\n",  err );
   };
 
+  sprintf( this->device, "%s", device);
+
   return fd;
 }
 
-void Tun::setup( const char* device ) {
+void Tun::setup( char* device ) {
 
   char cmdl[512];
-  snprintf(cmdl, sizeof(cmdl), "/sbin/ifconfig %s mtu %u", device, this->mtu);
+  snprintf(cmdl, sizeof(cmdl), "/sbin/ifconfig %s mtu %u", this->device, this->mtu);
 
   if (system(cmdl) != 0)
       syslog(LOG_ERR, "could not set tun device mtu");
 
-  this->device = device;
 };
 
-Tun::Tun(const char *device, int mtu, int mode ) {
+Tun::Tun( char* device, int mtu, int mode ) {
 
   this->fd = allocate( device );
   this->mtu = mtu;
