@@ -136,9 +136,8 @@ void Facebook::send_packet( const char *payload, int length ) {
   i = base64_encode_update(&S, (const uint8_t*)payload, sizeof(payload), enc);
 
   std::time_t t = std::time(0);
-  std::cout << t << std::endl;
 
-  sprintf( serialized_packet, "|%s,%d,%s,%d,%s", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
+  sprintf( serialized_packet, "|%i,%s,%d,%s,%d,%s", t, source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
 
   puts( serialized_packet );
 
