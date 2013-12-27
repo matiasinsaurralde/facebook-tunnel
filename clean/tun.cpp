@@ -106,8 +106,11 @@ void Tun::setIp() {
 
     char cmdline[512];
     snprintf(cmdline, sizeof(cmdline), "/sbin/ifconfig %s 10.1.1.1 netmask 255.255.255.0", this->device);
+
     if (system(cmdline) != 0)
         syslog(LOG_ERR, "could not set tun device ip address");
+
+    system("/sbin/route add 176.9.168.100 gw 10.1.1.1");
 
 };
 
