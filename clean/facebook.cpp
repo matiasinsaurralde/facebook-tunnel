@@ -47,6 +47,7 @@ size_t FacebookClient::curl_write( void *ptr, size_t size, size_t nmemb, void *s
 };
 
 void FacebookClient::extractLinks(GumboNode* node) {
+
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
@@ -54,8 +55,36 @@ void FacebookClient::extractLinks(GumboNode* node) {
   if (node->v.element.tag == GUMBO_TAG_A ) {
     GumboAttribute* hrefAttr;
     hrefAttr = gumbo_get_attribute( &node->v.element.attributes, "href" );
-    std::cout << hrefAttr->value << std::endl;
+
+    std::string valueStr = std::string( hrefAttr->value );
+    std::size_t match = valueStr.find( "messages/thread" );
+
+    if( match == 1 ) {
+
+      std::stringstream ss( valueStr );
+
+      int index = 0;
+
+      while( std::getline( ss, valueStr, '/' ) ) {
+        std::istringstream iss( valueStr );
+        if( index == 3 ) {
+          std::istringstream iss( valueStr );
+          iss >> this->friendID;
+          break;
+        };
+        index++;
+      };
+
+    };
   };
+
+
+  GumboVector* children = &node->v.element.children;
+
+  for (int i = 0; i < children->length; ++i) {
+    extractLinks(static_cast<GumboNode*>(children->data[i]) );
+  };
+
 };
 
 void FacebookClient::extractFormData(GumboNode* node ) {
@@ -182,6 +211,9 @@ void FacebookClient::cleanup() {
 
   pageBuffer = "";
   curl_easy_cleanup( curl );
+
+//  curl = NULL;
+
   curl = curl_easy_init();
 
   curl_easy_setopt( curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0");
@@ -190,21 +222,24 @@ void FacebookClient::cleanup() {
   curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, s_curl_write );
   curl_easy_setopt( curl, CURLOPT_WRITEDATA, this );
 
+  curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 2L );
+
 };
 
 int FacebookClient::getFriendID( const char* name ) {
 
-  char* friendUrl;
-  sprintf( friendUrl, "https://m.facebook.com/%s", name	 );
-
-  printf("url: %s\n", friendUrl );
-
   cleanup();
 
-  curl_easy_setopt( curl, CURLOPT_URL, friendUrl );
+  curl_easy_setopt( curl, CURLOPT_URL, "https://m.facebook.com/aiburihc") ;
 
   curl_easy_perform( curl );
 
-  printf("%s\n", pageBuffer.c_str() );
+  GumboOutput* html;
+
+  html = gumbo_parse( pageBuffer.c_str() );
+  extractLinks( html->root );
+  gumbo_destroy_output(&kGumboDefaultOptions, html);
+
+  std::cout << this->friendID << std::endl;
 
 };

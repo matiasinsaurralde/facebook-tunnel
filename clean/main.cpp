@@ -92,27 +92,17 @@ int main( int argc, char **argv ) {
 
   };
 
-  if( login == NULL || password == NULL ) {
-    cout << "Credentials are required!\n" << endl;
-    exit(1);
-  };
-
-  if( friendName == NULL ) {
-    mode = SERVER_MODE;
-  } else {
-    mode = CLIENT_MODE;
-  };
-
   openlog(argv[0], LOG_PERROR, LOG_DAEMON);
 
   if (!verboseFlag)
     setlogmask(LOG_UPTO(LOG_INFO));
 
+  if( login == NULL || password == NULL ) {
+    cout << "Credentials are required!\n" << endl;
+    exit(1);
+  };
 
-  syslog( LOG_DEBUG, "Setting mode: %d", mode );
-
-
-/*  FacebookClient* facebook = new FacebookClient();
+  FacebookClient* facebook = new FacebookClient();
 
   bool authSuccess = facebook->authenticate( login, password );
 
@@ -120,8 +110,16 @@ int main( int argc, char **argv ) {
     cout << "Authentication error!" << endl;
     exit(1);
   };
-*/
 
+  syslog( LOG_DEBUG, "Setting mode: %d", mode );
+
+  if( friendName == NULL ) {
+    mode = SERVER_MODE;
+  } else {
+    mode = CLIENT_MODE;
+    syslog( LOG_DEBUG, "Looking up friend's ID..." );
+    int friendID = facebook->getFriendID( friendName );
+  };
 
   int alive = true;
 

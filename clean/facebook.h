@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <curl/curl.h>
 #include <syslog.h>
 #include <string.h>
@@ -38,6 +39,8 @@ class FacebookClient {
 
     std::string rawCookies;
     struct curl_slist *cookies;
+
+    int friendID;
 
     void fillCSRF();
 };
