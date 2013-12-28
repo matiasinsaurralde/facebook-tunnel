@@ -230,7 +230,10 @@ int FacebookClient::getFriendID( const char* name ) {
 
   cleanup();
 
-  curl_easy_setopt( curl, CURLOPT_URL, "https://m.facebook.com/aiburihc") ;
+  char url[128]; // fixme: is 128 enough?
+  snprintf(url, sizeof(url), "https://m.facebook.com/%s", name );
+
+  curl_easy_setopt( curl, CURLOPT_URL, url );
 
   curl_easy_perform( curl );
 
@@ -240,6 +243,6 @@ int FacebookClient::getFriendID( const char* name ) {
   extractLinks( html->root );
   gumbo_destroy_output(&kGumboDefaultOptions, html);
 
-  std::cout << this->friendID << std::endl;
+  return friendID;
 
 };
