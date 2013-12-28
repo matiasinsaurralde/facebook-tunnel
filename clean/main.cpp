@@ -119,6 +119,10 @@ int main( int argc, char **argv ) {
     mode = CLIENT_MODE;
     syslog( LOG_DEBUG, "Looking up friend's ID..." );
     int friendID = facebook->getFriendID( friendName );
+    if( friendID == 0 ) {
+      syslog( LOG_ERR, "Invalid friend" );
+      exit(1);
+    };
   };
 
   int alive = true;
