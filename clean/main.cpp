@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <syslog.h>
+#include <pthread.h>
 
 #include <iostream>
 
@@ -145,35 +146,7 @@ int main( int argc, char **argv ) {
   strcpy( device, "tun0" );
 
   Tun* tunnel = new Tun( device, mtu, mode );
-
-  int length = 0;
-  char buf[ mtu ];
-
-  cout << "Ready and waiting for packets." << endl;
-
-  while( alive ) {
-
-    length = tunnel->read( buf );
-
-    if( length > 0 ) {
-
-      char serialized_packet[ 30 + 10 + 4 + sizeof( buf ) ];
-
-      IpHeader *header = (IpHeader *)(buf + 4  );
-      TcpHeader *tcpheader = (TcpHeader *)( buf + 4 + sizeof(struct ip) );
-
-      string source_ip, dest_ip;
-      source_ip = Utils::formatIp( ntohl( header->ip_src.s_addr ) );
-      dest_ip = Utils::formatIp( ntohl( header->ip_dst.s_addr ) );
-
-      sprintf( serialized_packet, "|%s,%d,%s,%d", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest )  );
-
-      puts( serialized_packet );
-
-      printf("paquete! %d\n", length );
-    };
-
-  };
+  tunnel->run();
 
   return 0;
 

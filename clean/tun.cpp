@@ -1,24 +1,26 @@
 /*
  *  Hans - IP over ICMP
  *  Copyright (C) 2009 Friedrich Schöller <hans@schoeller.se>
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 #include "tun.h"
 #include "utils.h"
+
+#include "base64encode.h"
 
 #include <iostream>
 #include <thread>
@@ -145,14 +147,16 @@ int Tun::read(char *buffer, uint32_t &sourceIp, uint32_t &destIp) {
 
 void Tun::keepWriting() {
 
+  int alive = 1; // fixme.
+
   int length = 0;
   char buf[ this->mtu ];
 
   cout << "Ready and waiting for packets." << endl;
 
-/*  while( alive ) {
+  while( alive ) {
 
-    length = tunnel->read( buf );
+    length = this->read( buf );
 
     if( length > 0 ) {
 
@@ -165,6 +169,13 @@ void Tun::keepWriting() {
       source_ip = Utils::formatIp( ntohl( header->ip_src.s_addr ) );
       dest_ip = Utils::formatIp( ntohl( header->ip_dst.s_addr ) );
 
+      char enc[2 * 32768];
+      base64_encodestate S;
+      base64_encode_init(&S);
+
+      size_t i;
+      i = base64_encode_update(&S, (const uint8_t*)buf, sizeof(buf), enc);
+
       sprintf( serialized_packet, "|%s,%d,%s,%d", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest )  );
 
       puts( serialized_packet );
@@ -172,13 +183,17 @@ void Tun::keepWriting() {
       printf("paquete! %d\n", length );
     };
 
-  };*/
+  };
 };
 
 void Tun::keepReading() {
+  // for ( ;; ) { };
 };
 
 void Tun::run() {
   std::thread readTh(  &Tun::keepReading, this );
   std::thread writeTh( &Tun::keepWriting, this );
+
+  readTh.join(); writeTh.join();
+
 };
