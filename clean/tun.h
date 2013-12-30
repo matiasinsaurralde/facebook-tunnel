@@ -50,6 +50,8 @@ public:
 protected:
     char device[VTUN_DEV_LEN];
 
+    FacebookClient* facebook;
+
     int mtu;
     int fd;
     int mode;

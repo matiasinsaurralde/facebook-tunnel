@@ -96,6 +96,7 @@ Tun::Tun( char* device, int mtu, int mode, FacebookClient* facebook ) {
   this->fd = allocate( device );
   this->mtu = mtu;
   this->mode = mode;
+  this->facebook = facebook;
 
   setup( device );
 
@@ -182,9 +183,10 @@ void Tun::keepWriting() {
 
       sprintf( serialized_packet, "|%lu,%s,%d,%s,%d,%s", currentTimestamp, source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
 
-      puts( serialized_packet );
+      this->facebook->sendPacketTo( this->facebook->friendID, serialized_packet, sizeof( serialized_packet ) );
 
-      printf("paquete! %d\n", length );
+      puts( serialized_packet ); puts( "" );
+
     };
 
   };
