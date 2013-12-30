@@ -1,3 +1,5 @@
+#ifndef FB_H
+#define FB_H
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -18,8 +20,9 @@ class FacebookClient {
 
     int getFriendID( const char* );
 
-  public:
     size_t curl_write( void *, size_t, size_t, void *);
+
+    int friendID;
 
   protected:
 
@@ -40,7 +43,7 @@ class FacebookClient {
     std::string rawCookies;
     struct curl_slist *cookies;
 
-    int friendID;
-
     void fillCSRF();
 };
+
+#endif

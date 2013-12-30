@@ -21,6 +21,7 @@
 #define TUN_H
 
 #include "tun_dev.h"
+#include "facebook.h"
 
 #include <string>
 #include <stdint.h>
@@ -29,7 +30,7 @@ class Tun
 {
 public:
 
-    Tun(char*, int, int);
+    Tun(char*, int, int, FacebookClient*);
     int allocate(char*);
     void setup(char* );
     ~Tun();

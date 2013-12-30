@@ -91,7 +91,7 @@ void Tun::setup( char* device ) {
 
 };
 
-Tun::Tun( char* device, int mtu, int mode ) {
+Tun::Tun( char* device, int mtu, int mode, FacebookClient* facebook ) {
 
   this->fd = allocate( device );
   this->mtu = mtu;

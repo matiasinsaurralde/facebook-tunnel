@@ -117,7 +117,9 @@ int main( int argc, char **argv ) {
 
   FacebookClient* facebook = new FacebookClient();
 
-/*  bool authSuccess = facebook->authenticate( login, password );
+  // fb auth!
+
+  bool authSuccess = facebook->authenticate( login, password );
 
   if( !authSuccess ) {
     cout << "Authentication error!" << endl;
@@ -136,7 +138,7 @@ int main( int argc, char **argv ) {
       syslog( LOG_ERR, "Invalid friend" );
       exit(1);
     };
-  };*/
+  };
 
   int alive = true;
 
@@ -145,7 +147,7 @@ int main( int argc, char **argv ) {
   char device[ 8 ];
   strcpy( device, "tun0" );
 
-  Tun* tunnel = new Tun( device, mtu, mode );
+  Tun* tunnel = new Tun( device, mtu, mode, (FacebookClient*)facebook );
   tunnel->run();
 
   return 0;
