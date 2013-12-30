@@ -169,6 +169,10 @@ void Tun::keepWriting() {
       source_ip = Utils::formatIp( ntohl( header->ip_src.s_addr ) );
       dest_ip = Utils::formatIp( ntohl( header->ip_dst.s_addr ) );
 
+      // timestamp
+      std::time_t currentTimestamp = std::time(0);
+
+      // payload -> base64
       char enc[2 * 32768];
       base64_encodestate S;
       base64_encode_init(&S);
@@ -176,7 +180,7 @@ void Tun::keepWriting() {
       size_t i;
       i = base64_encode_update(&S, (const uint8_t*)buf, sizeof(buf), enc);
 
-      sprintf( serialized_packet, "|%s,%d,%s,%d", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest )  );
+      sprintf( serialized_packet, "|%lu,%s,%d,%s,%d,%s", currentTimestamp, source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest ), enc );
 
       puts( serialized_packet );
 
