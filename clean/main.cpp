@@ -160,7 +160,6 @@ int main( int argc, char **argv ) {
       char serialized_packet[ 30 + 10 + 4 + sizeof( buf ) ];
 
       IpHeader *header = (IpHeader *)(buf + 4  );
-//    TcpHeader *tcpheader = (TcpHeader *)( buf + sizeof(struct ip) );
       TcpHeader *tcpheader = (TcpHeader *)( buf + 4 + sizeof(struct ip) );
 
       string source_ip, dest_ip;
