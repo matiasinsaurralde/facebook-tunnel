@@ -1,5 +1,7 @@
 #include "facebook.h"
 
+#define DEFAULT_URL_SIZE  128
+
 static void s_curl_write(void *buffer, size_t sz, size_t n, void *f) {
   static_cast<FacebookClient*>(f)->curl_write( buffer, sz, n, f );
 };
@@ -230,8 +232,8 @@ int FacebookClient::getFriendID( const char* name ) {
 
   cleanup();
 
-  char url[128]; // fixme: is 128 enough?
-  snprintf(url, sizeof(url), "https://m.facebook.com/%s", name );
+  char url[ DEFAULT_URL_SIZE ]; // fixme: is 128 enough?
+  snprintf( url, sizeof(url), "https://m.facebook.com/%s", name );
 
   curl_easy_setopt( curl, CURLOPT_URL, url );
 
@@ -249,5 +251,36 @@ int FacebookClient::getFriendID( const char* name ) {
 
 void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int payloadLength ) {
   cleanup();
+
+  char url[ DEFAULT_URL_SIZE ];
+  snprintf( url, sizeof( url ), "https://m.facebook.com/messages/send/?icm=1");
+
+  curl_easy_setopt( curl, CURLOPT_URL, url );
+
+  /* a kind of csrf token, it's generated per user and lasts a session: */
+
+  curl_formadd(&messageForm,
+               &messageFormLastPtr,
+               CURLFORM_COPYNAME, "fb_dtsg",
+               CURLFORM_COPYCONTENTS, "AQAEdMcz",
+               CURLFORM_END);
+
+  curl_formadd(&messageForm,
+               &messageFormLastPtr,
+               CURLFORM_COPYNAME, "ids[1139968251]",
+               CURLFORM_COPYCONTENTS, "1139968251",
+               CURLFORM_END);
+
+  curl_formadd(&messageForm,
+               &messageFormLastPtr,
+               CURLFORM_COPYNAME, "body",
+               CURLFORM_COPYCONTENTS, "|t",
+               CURLFORM_END);
+
+  curl_easy_setopt( curl, CURLOPT_HTTPPOST, messageForm );
+
+  curl_easy_perform( curl );
+
+  std::cout << "FacebookClient::sendPacketTo()" << std::endl;
 
 };

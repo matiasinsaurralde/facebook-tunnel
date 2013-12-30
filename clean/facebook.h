@@ -42,6 +42,9 @@ class FacebookClient {
     struct curl_httppost *loginForm = NULL;
     struct curl_httppost *loginFormLastPtr = NULL;
 
+    struct curl_httppost *messageForm = NULL;
+    struct curl_httppost *messageFormLastPtr = NULL;
+
     std::string rawCookies;
     struct curl_slist *cookies;
 
