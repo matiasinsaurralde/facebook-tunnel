@@ -140,6 +140,8 @@ int main( int argc, char **argv ) {
     };
   };
 
+  std::cout << "\n\nfriend ID => " << facebook->friendID << "\n\n" << std::endl;
+
   int alive = true;
 
   int mtu = 1500;
