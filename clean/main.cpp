@@ -7,6 +7,18 @@
 
 #include "facebook.h"
 #include "tun.h"
+#include "utils.h"
+
+/* tcp/ip */
+
+#include <arpa/inet.h>
+#include <netinet/in_systm.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+
+typedef ip IpHeader;
+typedef tcphdr TcpHeader;
 
 using namespace std;
 
@@ -104,7 +116,7 @@ int main( int argc, char **argv ) {
 
   FacebookClient* facebook = new FacebookClient();
 
-  bool authSuccess = facebook->authenticate( login, password );
+/*  bool authSuccess = facebook->authenticate( login, password );
 
   if( !authSuccess ) {
     cout << "Authentication error!" << endl;
@@ -123,7 +135,7 @@ int main( int argc, char **argv ) {
       syslog( LOG_ERR, "Invalid friend" );
       exit(1);
     };
-  };
+  };*/
 
   int alive = true;
 
@@ -142,7 +154,22 @@ int main( int argc, char **argv ) {
   while( alive ) {
 
     length = tunnel->read( buf );
+
     if( length > 0 ) {
+
+      char serialized_packet[ 30 + 10 + 4 + sizeof( buf ) ];
+
+      IpHeader *header = (IpHeader *)(buf + 4  );
+      TcpHeader *tcpheader = (TcpHeader *)( buf + sizeof(struct ip) );
+
+      string source_ip, dest_ip;
+      source_ip = Utils::formatIp( ntohl( header->ip_src.s_addr ) );
+      dest_ip = Utils::formatIp( ntohl( header->ip_dst.s_addr ) );
+
+      sprintf( serialized_packet, "|%s,%d,%s,%d", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest )  );
+
+      puts( serialized_packet );
+
       printf("paquete! %d\n", length );
     };
 
