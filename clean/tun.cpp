@@ -18,13 +18,11 @@
  */
 
 #include "tun.h"
+#include "utils.h"
 
 #include <iostream>
+#include <thread>
 
-#include <arpa/inet.h>
-#include <netinet/in_systm.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
 #include <syslog.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +38,15 @@
 #include <linux/if.h>
 #include <linux/if_tun.h>
 
+/* network, tcp/ip */
+
+#include <arpa/inet.h>
+#include <netinet/in_systm.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+
+typedef tcphdr TcpHeader;
 typedef ip IpHeader;
 
 using namespace std;
@@ -135,3 +142,43 @@ int Tun::read(char *buffer, uint32_t &sourceIp, uint32_t &destIp) {
 
     return length;
 }
+
+void Tun::keepWriting() {
+
+  int length = 0;
+  char buf[ this->mtu ];
+
+  cout << "Ready and waiting for packets." << endl;
+
+/*  while( alive ) {
+
+    length = tunnel->read( buf );
+
+    if( length > 0 ) {
+
+      char serialized_packet[ 30 + 10 + 4 + sizeof( buf ) ];
+
+      IpHeader *header = (IpHeader *)(buf + 4  );
+      TcpHeader *tcpheader = (TcpHeader *)( buf + 4 + sizeof(struct ip) );
+
+      string source_ip, dest_ip;
+      source_ip = Utils::formatIp( ntohl( header->ip_src.s_addr ) );
+      dest_ip = Utils::formatIp( ntohl( header->ip_dst.s_addr ) );
+
+      sprintf( serialized_packet, "|%s,%d,%s,%d", source_ip.c_str(), htons( tcpheader->source ), dest_ip.c_str(), htons( tcpheader->dest )  );
+
+      puts( serialized_packet );
+
+      printf("paquete! %d\n", length );
+    };
+
+  };*/
+};
+
+void Tun::keepReading() {
+};
+
+void Tun::run() {
+  std::thread readTh(  &Tun::keepReading, this );
+  std::thread writeTh( &Tun::keepWriting, this );
+};

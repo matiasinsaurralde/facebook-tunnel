@@ -40,6 +40,10 @@ public:
     int read(char*, uint32_t&, uint32_t&);
 
     void write(const char*, int );
+    void run();
+
+    void keepReading();
+    void keepWriting();
 
     void setIp();
 protected:
