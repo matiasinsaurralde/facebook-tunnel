@@ -22,6 +22,8 @@ class FacebookClient {
 
     size_t curl_write( void *, size_t, size_t, void *);
 
+    void sendPacketTo( int, const char*, int );
+
     int friendID;
 
   protected:

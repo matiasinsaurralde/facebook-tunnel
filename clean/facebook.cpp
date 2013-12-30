@@ -246,3 +246,8 @@ int FacebookClient::getFriendID( const char* name ) {
   return friendID;
 
 };
+
+void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int payloadLength ) {
+  cleanup();
+
+};
