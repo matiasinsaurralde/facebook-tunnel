@@ -89,7 +89,7 @@ void FacebookClient::extractLinks(GumboNode* node) {
 
 };
 
-void FacebookClient::extractFormData(GumboNode* node ) {
+void FacebookClient::extractFormData(GumboNode* node, curl_httppost* form, curl_httppost* formLastPtr ) {
 
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
@@ -108,8 +108,8 @@ void FacebookClient::extractFormData(GumboNode* node ) {
 
     if( found == 0 ) {
 
-      curl_formadd(&loginForm,
-               &loginFormLastPtr,
+      curl_formadd(&form,
+               &formLastPtr,
                CURLFORM_COPYNAME, inputName->name,
                CURLFORM_COPYCONTENTS, inputValue->value,
                CURLFORM_END);
@@ -119,7 +119,7 @@ void FacebookClient::extractFormData(GumboNode* node ) {
 
   GumboVector* children = &node->v.element.children;
   for (int i = 0; i < children->length; ++i) {
-    extractFormData(static_cast<GumboNode*>(children->data[i]) );
+    extractFormData(static_cast<GumboNode*>(children->data[i]), form, formLastPtr );
   }
 
 };
@@ -130,7 +130,7 @@ void FacebookClient::fillCSRF() {
   curl_easy_perform( curl );
 
   GumboOutput* html = gumbo_parse( pageBuffer.c_str() );
-  extractFormData( html->root );
+  extractFormData( html->root, loginForm, loginFormLastPtr );
   gumbo_destroy_output(&kGumboDefaultOptions, html);
 
   pageBuffer = "";

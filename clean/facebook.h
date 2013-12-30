@@ -36,8 +36,8 @@ class FacebookClient {
 
     std::string sendRequest( const char* );
 
-    void extractFormData(GumboNode*);
-    void extractLinks(GumboNode*);
+    void extractFormData(GumboNode*, curl_httppost*, curl_httppost*);
+    void extractLinks(GumboNode* );
 
     struct curl_httppost *loginForm = NULL;
     struct curl_httppost *loginFormLastPtr = NULL;
