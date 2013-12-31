@@ -37,6 +37,7 @@ class FacebookClient {
     std::string sendRequest( const char* );
 
     void extractFormData(GumboNode*, curl_httppost*, curl_httppost*);
+    void extractFormData(GumboNode*, char*, char* );
     void extractLinks(GumboNode* );
 
     struct curl_httppost *loginForm = NULL;
@@ -48,7 +49,10 @@ class FacebookClient {
     std::string rawCookies;
     struct curl_slist *cookies;
 
+    char fb_dtsg[4];
+
     void fillCSRF();
+    void fillChatCSRF( int );
 };
 
 #endif

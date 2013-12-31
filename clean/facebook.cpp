@@ -89,6 +89,39 @@ void FacebookClient::extractLinks(GumboNode* node) {
 
 };
 
+void FacebookClient::extractFormData(GumboNode* node, char* fieldName, char* fieldValue ) {
+
+  if (node->type != GUMBO_NODE_ELEMENT) {
+    return;
+  }
+
+  if (node->v.element.tag == GUMBO_TAG_INPUT ) {
+    GumboAttribute* inputType;
+    GumboAttribute* inputName;
+    GumboAttribute* inputValue;
+
+    inputType = gumbo_get_attribute( &node->v.element.attributes, "type" );
+    inputName = gumbo_get_attribute( &node->v.element.attributes, "name" );
+    inputValue = gumbo_get_attribute( &node->v.element.attributes, "value" );
+
+    if( inputValue != NULL  && inputName != NULL) {
+      std::string val( inputName->value );
+      std::size_t match = val.find( fieldName );
+
+      if( match == 0 ) {
+        strcpy( fieldValue, inputValue->value );
+      };
+    };
+
+  };
+
+  GumboVector* children = &node->v.element.children;
+  for (int i = 0; i < children->length; ++i) {
+    extractFormData(static_cast<GumboNode*>(children->data[i]), fieldName, fieldValue );
+  }
+
+};
+
 void FacebookClient::extractFormData(GumboNode* node, curl_httppost* form, curl_httppost* formLastPtr ) {
 
   if (node->type != GUMBO_NODE_ELEMENT) {
@@ -134,6 +167,30 @@ void FacebookClient::fillCSRF() {
   gumbo_destroy_output(&kGumboDefaultOptions, html);
 
   pageBuffer = "";
+
+};
+
+void FacebookClient::fillChatCSRF( int friendID ) {
+
+  cleanup();
+
+  char url[ DEFAULT_URL_SIZE ];
+  snprintf( url, sizeof( url ), "https://m.facebook.com/messages/thread/%d", friendID );
+
+  curl_easy_setopt( curl, CURLOPT_URL, url );
+
+  curl_easy_perform( curl );
+
+  GumboOutput* html;
+
+  html = gumbo_parse( pageBuffer.c_str() );
+
+  char fieldName[4];
+  strcpy( fieldName, "fb_dtsg" );
+
+  extractFormData( html->root, fieldName, this->fb_dtsg );
+
+  gumbo_destroy_output(&kGumboDefaultOptions, html);
 
 };
 
@@ -245,15 +302,25 @@ int FacebookClient::getFriendID( const char* name ) {
   extractLinks( html->root );
   gumbo_destroy_output(&kGumboDefaultOptions, html);
 
+  fillChatCSRF( friendID );
+
   return friendID;
 
 };
 
 void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int payloadLength ) {
+
+  std::cout << "FacebookClient::sendPacketTo()" << std::endl
+
   cleanup();
 
   char url[ DEFAULT_URL_SIZE ];
   snprintf( url, sizeof( url ), "https://m.facebook.com/messages/send/?icm=1");
+
+  char destField[ 32 ];
+  char destFieldValue[ 32 ];
+  snprintf( destField, sizeof( destField), "ids[%d]", this->friendID );
+  snprintf( destFieldValue, sizeof( destFieldValue), "%d", this->friendID );
 
   curl_easy_setopt( curl, CURLOPT_URL, url );
 
@@ -262,25 +329,23 @@ void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int pa
   curl_formadd(&messageForm,
                &messageFormLastPtr,
                CURLFORM_COPYNAME, "fb_dtsg",
-               CURLFORM_COPYCONTENTS, "AQAEdMcz",
+               CURLFORM_COPYCONTENTS, this->fb_dtsg,
                CURLFORM_END);
 
   curl_formadd(&messageForm,
                &messageFormLastPtr,
-               CURLFORM_COPYNAME, "ids[1139968251]",
-               CURLFORM_COPYCONTENTS, "1139968251",
+               CURLFORM_COPYNAME, destField,
+               CURLFORM_COPYCONTENTS, destFieldValue,
                CURLFORM_END);
 
   curl_formadd(&messageForm,
                &messageFormLastPtr,
                CURLFORM_COPYNAME, "body",
-               CURLFORM_COPYCONTENTS, "|t",
+               CURLFORM_COPYCONTENTS, "|payload (...)",
                CURLFORM_END);
 
   curl_easy_setopt( curl, CURLOPT_HTTPPOST, messageForm );
 
   curl_easy_perform( curl );
-
-  std::cout << "FacebookClient::sendPacketTo()" << std::endl;
 
 };
