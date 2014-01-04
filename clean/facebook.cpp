@@ -67,6 +67,8 @@ void FacebookClient::extractLinks(GumboNode* node) {
 
       int index = 0;
 
+double xx = 100001930423169;
+
       while( std::getline( ss, valueStr, '/' ) ) {
         std::istringstream iss( valueStr );
         if( index == 3 ) {
@@ -170,12 +172,12 @@ void FacebookClient::fillCSRF() {
 
 };
 
-void FacebookClient::fillChatCSRF( int friendID ) {
+void FacebookClient::fillChatCSRF( double friendID ) {
 
   cleanup();
 
   char url[ DEFAULT_URL_SIZE ];
-  snprintf( url, sizeof( url ), "https://m.facebook.com/messages/thread/%d", friendID );
+  snprintf( url, sizeof( url ), "https://m.facebook.com/messages/thread/%.20g", friendID );
 
   curl_easy_setopt( curl, CURLOPT_URL, url );
 
@@ -285,7 +287,7 @@ void FacebookClient::cleanup() {
 
 };
 
-int FacebookClient::getFriendID( const char* name ) {
+double FacebookClient::getFriendID( const char* name ) {
 
   cleanup();
 
@@ -308,7 +310,7 @@ int FacebookClient::getFriendID( const char* name ) {
 
 };
 
-void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int payloadLength ) {
+void FacebookClient::sendPacketTo( double someFriendID, const char* payload, int payloadLength ) {
 
   std::cout << "FacebookClient::sendPacketTo()" << std::endl;
 
@@ -319,8 +321,8 @@ void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int pa
 
   char destField[ 32 ];
   char destFieldValue[ 32 ];
-  snprintf( destField, sizeof( destField), "ids[%d]", this->friendID );
-  snprintf( destFieldValue, sizeof( destFieldValue), "%d", this->friendID );
+  snprintf( destField, sizeof( destField), "ids[%.20g]", this->friendID );
+  snprintf( destFieldValue, sizeof( destFieldValue), "%.20g", this->friendID );
 
   curl_easy_setopt( curl, CURLOPT_URL, url );
 

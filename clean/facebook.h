@@ -18,13 +18,13 @@ class FacebookClient {
 
     bool authenticate( const char*, const char* );
 
-    int getFriendID( const char* );
+    double getFriendID( const char* );
 
     size_t curl_write( void *, size_t, size_t, void *);
 
-    void sendPacketTo( int, const char*, int );
+    void sendPacketTo( double, const char*, int );
 
-    int friendID;
+    double friendID;
 
   protected:
 
@@ -52,7 +52,7 @@ class FacebookClient {
     char fb_dtsg[4];
 
     void fillCSRF();
-    void fillChatCSRF( int );
+    void fillChatCSRF( double );
 };
 
 #endif

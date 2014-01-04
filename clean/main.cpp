@@ -140,7 +140,7 @@ int main( int argc, char **argv ) {
     };
   };
 
-  std::cout << "\n\nfriend ID => " << facebook->friendID << "\n\n" << std::endl;
+  printf("friend ID => %.20g\n", facebook->friendID );
 
   int alive = true;
 
