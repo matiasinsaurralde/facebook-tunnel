@@ -310,7 +310,7 @@ int FacebookClient::getFriendID( const char* name ) {
 
 void FacebookClient::sendPacketTo( int someFriendID, const char* payload, int payloadLength ) {
 
-  std::cout << "FacebookClient::sendPacketTo()" << std::endl
+  std::cout << "FacebookClient::sendPacketTo()" << std::endl;
 
   cleanup();
 

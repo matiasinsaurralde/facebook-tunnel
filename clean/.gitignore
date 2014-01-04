@@ -1,2 +1,3 @@
 facebook-tunnel
-run.sh
+client.sh
+server.sh
