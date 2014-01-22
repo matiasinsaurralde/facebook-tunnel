@@ -226,7 +226,9 @@ bool FacebookClient::authenticate( const char* login, const char* password ) {
 
   curl_easy_setopt(curl, CURLOPT_HTTPPOST, loginForm);
 
-  curl_easy_perform( curl );
+  int o = curl_easy_perform( curl );
+
+printf("curl_easy_perform(): %d\nlogin: %s\n", o, pageBuffer.c_str() );
 
   struct curl_slist *nc;
 
