@@ -67,7 +67,7 @@ void FacebookClient::extractLinks(GumboNode* node) {
 
       int index = 0;
 
-double xx = 100001930423169;
+//double xx = 100001930423169;
 
       while( std::getline( ss, valueStr, '/' ) ) {
         std::istringstream iss( valueStr );
