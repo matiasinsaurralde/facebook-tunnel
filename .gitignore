@@ -3,3 +3,7 @@ hans
 cookies.txt
 tmp/
 *.o
+facebook-tunnel
+client.sh
+server.sh
+*.sh
