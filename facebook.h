@@ -24,6 +24,8 @@ class FacebookClient {
 
     void sendPacketTo( double, const char*, int );
 
+    void readPacketsFrom( double );
+
     double friendID;
 
   protected:

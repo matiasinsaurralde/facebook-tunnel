@@ -351,3 +351,6 @@ void FacebookClient::sendPacketTo( double someFriendID, const char* payload, int
   curl_easy_perform( curl );
 
 };
+
+void FacebookClient::readPacketsFrom( double someFriendID ) {
+};
