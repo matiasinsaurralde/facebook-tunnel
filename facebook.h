@@ -40,11 +40,11 @@ class FacebookClient {
     void extractFormData(GumboNode*, char*, char* );
     void extractLinks(GumboNode* );
 
-    struct curl_httppost *loginForm = NULL;
-    struct curl_httppost *loginFormLastPtr = NULL;
+    struct curl_httppost *loginForm;
+    struct curl_httppost *loginFormLastPtr;
 
-    struct curl_httppost *messageForm = NULL;
-    struct curl_httppost *messageFormLastPtr = NULL;
+    struct curl_httppost *messageForm;
+    struct curl_httppost *messageFormLastPtr;
 
     std::string rawCookies;
     struct curl_slist *cookies;
