@@ -26,6 +26,8 @@ class FacebookClient {
 
     void readPacketsFrom( double );
 
+    void listClients();
+
     double friendID;
 
   protected:
@@ -41,6 +43,7 @@ class FacebookClient {
     void extractFormData(GumboNode*, curl_httppost*, curl_httppost*);
     void extractFormData(GumboNode*, char*, char* );
     void extractLinks(GumboNode* );
+    void extractClientList(GumboNode* );
 
     struct curl_httppost *loginForm;
     struct curl_httppost *loginFormLastPtr;

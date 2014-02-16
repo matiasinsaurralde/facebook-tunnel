@@ -193,6 +193,7 @@ void Tun::keepWriting() {
 };
 
 void Tun::keepReading() {
+  this->facebook->listClients();
   // for ( ;; ) { };
 };
 
