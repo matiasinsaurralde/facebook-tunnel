@@ -343,7 +343,8 @@ void FacebookClient::sendPacketTo( double someFriendID, const char* payload, int
   curl_formadd(&messageForm,
                &messageFormLastPtr,
                CURLFORM_COPYNAME, "body",
-               CURLFORM_COPYCONTENTS, "|payload (...)",
+               CURLFORM_COPYCONTENTS, payload,
+               // CURLFORM_COPYCONTENTS, "|payload (...)",
                CURLFORM_END);
 
   curl_easy_setopt( curl, CURLOPT_HTTPPOST, messageForm );
