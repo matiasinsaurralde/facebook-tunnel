@@ -14,6 +14,7 @@ TODO
 
 * Finish the client.
 * Obfuscation and/or crypto.
+* Support other platforms (kennym is working on Mac support, Android would be nice).
 
 I'm looking for collaborators, so if you have something interesting, send a pull request.
 
