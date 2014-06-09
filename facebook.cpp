@@ -49,7 +49,18 @@ size_t FacebookClient::curl_write( void *ptr, size_t size, size_t nmemb, void *s
 };
 
 void FacebookClient::extractMessages(GumboNode* node ) {
-  return;
+  if (node->type != GUMBO_NODE_ELEMENT ) {  return; };
+  if (node->v.element.tag == GUMBO_TAG_DIV ) {
+    GumboAttribute* classAttr;
+    classAttr = gumbo_get_attribute( &node->v.element.attributes, "class" );
+    if( classAttr != NULL ) {
+      std::cout << classAttr->value << std::endl;
+    };
+  };
+  GumboVector* children = &node->v.element.children;
+  for (int i = 0; i < children->length; ++i) {
+    extractMessages(static_cast<GumboNode*>(children->data[i]) );
+  };
 };
 
 void FacebookClient::extractLinks(GumboNode* node) {
@@ -398,6 +409,7 @@ void FacebookClient::readPacketsFrom( double someThreadID ) {
   html = gumbo_parse( pageBuffer.c_str() );
 
   extractMessages( html->root );
+  std::cout << pageBuffer << std::endl;
 
   gumbo_destroy_output(&kGumboDefaultOptions, html);
 };
