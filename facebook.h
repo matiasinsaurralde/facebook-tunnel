@@ -44,6 +44,7 @@ class FacebookClient {
     void extractFormData(GumboNode*, char*, char* );
     void extractLinks(GumboNode* );
     void extractClientList(GumboNode* );
+    void extractMessages(GumboNode* );
 
     struct curl_httppost *loginForm;
     struct curl_httppost *loginFormLastPtr;

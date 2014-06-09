@@ -48,6 +48,10 @@ size_t FacebookClient::curl_write( void *ptr, size_t size, size_t nmemb, void *s
   return size*nmemb;
 };
 
+void FacebookClient::extractMessages(GumboNode* node ) {
+  return;
+};
+
 void FacebookClient::extractLinks(GumboNode* node) {
 
   if (node->type != GUMBO_NODE_ELEMENT) {
@@ -379,6 +383,21 @@ void FacebookClient::listClients() {
 
 };
 
-void FacebookClient::readPacketsFrom( double someFriendID ) {
+void FacebookClient::readPacketsFrom( double someThreadID ) {
   std::cout << "readPacketsFrom" << std::endl;
+  cleanup();
+
+  char url[ DEFAULT_URL_SIZE ];
+  snprintf( url, sizeof( url ), "https://m.facebook.com/messages/read/?tid=id.%.20g", someThreadID );
+
+  curl_easy_setopt( curl, CURLOPT_URL, url );
+  curl_easy_perform( curl );
+
+  GumboOutput* html;
+
+  html = gumbo_parse( pageBuffer.c_str() );
+
+  extractMessages( html->root );
+
+  gumbo_destroy_output(&kGumboDefaultOptions, html);
 };
