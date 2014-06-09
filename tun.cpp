@@ -197,6 +197,7 @@ void Tun::keepReading() {
   double sampleThread = 349370745200979;
   for(;;) {
     this->facebook->readPacketsFrom( sampleThread );
+    sleep(2);
   };
 };
 
