@@ -54,7 +54,7 @@ class FacebookClient {
     std::string rawCookies;
     struct curl_slist *cookies;
 
-    char fb_dtsg[4];
+    char* fb_dtsg;
 
     void fillCSRF();
     void fillChatCSRF( double );

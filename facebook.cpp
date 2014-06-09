@@ -62,12 +62,8 @@ void FacebookClient::extractLinks(GumboNode* node) {
     std::size_t match = valueStr.find( "messages/thread" );
 
     if( match == 1 ) {
-
       std::stringstream ss( valueStr );
-
       int index = 0;
-
-//double xx = 100001930423169;
 
       while( std::getline( ss, valueStr, '/' ) ) {
         std::istringstream iss( valueStr );
@@ -92,7 +88,6 @@ void FacebookClient::extractLinks(GumboNode* node) {
 };
 
 void FacebookClient::extractFormData(GumboNode* node, char* fieldName, char* fieldValue ) {
-
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
@@ -111,7 +106,12 @@ void FacebookClient::extractFormData(GumboNode* node, char* fieldName, char* fie
       std::size_t match = val.find( fieldName );
 
       if( match == 0 ) {
-        strcpy( fieldValue, inputValue->value );
+
+        // if inputName->value == "fb_dtsg" ...
+        char value[32];
+        strncpy( value, inputValue->value, sizeof(value) );
+        this->fb_dtsg = value;
+
       };
     };
 
@@ -125,7 +125,6 @@ void FacebookClient::extractFormData(GumboNode* node, char* fieldName, char* fie
 };
 
 void FacebookClient::extractFormData(GumboNode* node, curl_httppost* form, curl_httppost* formLastPtr ) {
-
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
@@ -142,7 +141,6 @@ void FacebookClient::extractFormData(GumboNode* node, curl_httppost* form, curl_
     std::size_t found = std::string( inputType->value ).find( "hidden" );
 
     if( found == 0 ) {
-
       curl_formadd(&form,
                &formLastPtr,
                CURLFORM_COPYNAME, inputName->name,
@@ -184,7 +182,6 @@ void FacebookClient::fillChatCSRF( double friendID ) {
 
   char url[ DEFAULT_URL_SIZE ];
   snprintf( url, sizeof( url ), "https://m.facebook.com/messages/thread/%.20g", friendID );
-
   curl_easy_setopt( curl, CURLOPT_URL, url );
 
   curl_easy_perform( curl );
@@ -193,9 +190,8 @@ void FacebookClient::fillChatCSRF( double friendID ) {
 
   html = gumbo_parse( pageBuffer.c_str() );
 
-  char fieldName[4];
-  strcpy( fieldName, "fb_dtsg" );
-
+  char fieldName[8];
+  strncpy( fieldName, "fb_dtsg", sizeof(fieldName));
   extractFormData( html->root, fieldName, this->fb_dtsg );
 
   gumbo_destroy_output(&kGumboDefaultOptions, html);
@@ -294,6 +290,8 @@ void FacebookClient::cleanup() {
 };
 
 double FacebookClient::getFriendID( const char* name ) {
+
+  std::cout << "getFriendID()" << std::endl;
 
   cleanup();
 
