@@ -108,9 +108,10 @@ void FacebookClient::extractFormData(GumboNode* node, char* fieldName, char* fie
       if( match == 0 ) {
 
         // if inputName->value == "fb_dtsg" ...
-        char value[32];
+        char value[64];
         strncpy( value, inputValue->value, sizeof(value) );
-        this->fb_dtsg = value;
+        strncpy( this->fb_dtsg, inputValue->value, sizeof(this->fb_dtsg) );
+        //this->fb_dtsg = value;
 
       };
     };
