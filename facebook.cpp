@@ -361,6 +361,7 @@ void FacebookClient::sendPacketTo( double someFriendID, const char* payload, int
 /* mostly server stuff */
 
 void FacebookClient::listClients() {
+  std::cout << "listCLients()" << std::endl;
   cleanup();
 
   char url[ DEFAULT_URL_SIZE ];
@@ -379,4 +380,5 @@ void FacebookClient::listClients() {
 };
 
 void FacebookClient::readPacketsFrom( double someFriendID ) {
+  std::cout << "readPacketsFrom" << std::endl;
 };

@@ -194,7 +194,10 @@ void Tun::keepWriting() {
 
 void Tun::keepReading() {
   this->facebook->listClients();
-  // for ( ;; ) { };
+  double sampleThread = 349370745200979;
+  for(;;) {
+    this->facebook->readPacketsFrom( sampleThread );
+  };
 };
 
 void Tun::run() {
