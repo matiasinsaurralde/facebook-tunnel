@@ -36,9 +36,9 @@ void help() {
   cout << "This program allows you to send TCP packets over Facebook chat. Login credentials can be specified as arguments." << endl;
   cout << "Also when running in client mode, your friend's nickname (your \"server\") is needed." << endl << endl;
   cout << "Running as client (example):" << endl << endl;
-  cout << "$ facebook-tunnel -login luke@skywalker.com -password theforce -friend r2d2" << endl << endl;
+  cout << "$ facebook-tunnel --login luke@skywalker.com --password theforce --friend r2d2" << endl << endl;
   cout << "Running as server:" << endl << endl;
-  cout << "$ facebook-tunnel -login r2@d2.com -password droidpower" << endl;
+  cout << "$ facebook-tunnel --login r2@d2.com --password droidpower" << endl;
 
   cout << endl;
 };
