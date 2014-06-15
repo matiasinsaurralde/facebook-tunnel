@@ -20,7 +20,9 @@
 #include "tun.h"
 #include "utils.h"
 
+extern "C" {
 #include "base64encode.h"
+}
 
 #include <iostream>
 #include <thread>
