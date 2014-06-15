@@ -12,10 +12,19 @@ We all know that the Internet is about accessing many places, etc. So I feel thi
 Requirements
 ------------
 
-* Gumbo parser (bundled...)
+* Gumbo parser
 * libcurl
 * tuntap (for linux)
 * gcc/g++
+
+Building
+------------
+```
+$ mkdir build; cd build
+$ cmake ..
+$ make
+$ ./facebook-tunnel
+```
 
 
 TODO
