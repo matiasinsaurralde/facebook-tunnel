@@ -36,4 +36,7 @@ TODO
 
 I'm looking for collaborators, so if you have something interesting, send a pull request.
 
-You can also shoot me an e-mail: matias@insaurral.de
+
+You can also shoot me an e-mail: matias@insaurral.de / matias@heinetwork.com
+
+Twitter: [@matias_baruch](https://twitter.com/matias_baruch)
