@@ -1,0 +1,11 @@
+Package: facebook-tunnel-dev
+Source: facebook-tunnel
+Version: 20150319-1
+Architecture: all
+Maintainer: dmotc cmotc@openmailbox.org
+Installed-Size: 25
+Depends: twister-core (= 20150319-1)
+Section: misc
+Priority: optional
+Homepage: https://github.com/matiasinsaurralde/facebook-tunnel
+Description: Facebook-Tunnel package for Debian(CONTRIB AT BEST, ENCOURAGES THE USE OF FACEBOOK ALBEIT AS A MEANS TO AN END.)
