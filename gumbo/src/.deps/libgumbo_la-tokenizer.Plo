@@ -1,0 +1,94 @@
+src/libgumbo_la-tokenizer.lo: src/tokenizer.c /usr/include/stdc-predef.h \
+ src/tokenizer.h /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdbool.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h src/gumbo.h \
+ src/token_type.h src/tokenizer_states.h /usr/include/assert.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h /usr/include/string.h \
+ /usr/include/xlocale.h /usr/include/x86_64-linux-gnu/bits/string.h \
+ /usr/include/x86_64-linux-gnu/bits/string2.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/byteswap.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/byteswap-16.h /usr/include/stdlib.h \
+ src/attribute.h src/char_ref.h src/error.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h src/insertion_mode.h \
+ src/string_buffer.h src/parser.h src/string_piece.h src/utf8.h \
+ src/util.h src/vector.h
+
+/usr/include/stdc-predef.h:
+
+src/tokenizer.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdbool.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h:
+
+src/gumbo.h:
+
+src/token_type.h:
+
+src/tokenizer_states.h:
+
+/usr/include/assert.h:
+
+/usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/string.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/x86_64-linux-gnu/bits/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string2.h:
+
+/usr/include/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap-16.h:
+
+/usr/include/stdlib.h:
+
+src/attribute.h:
+
+src/char_ref.h:
+
+src/error.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdint.h:
+
+/usr/include/stdint.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+src/insertion_mode.h:
+
+src/string_buffer.h:
+
+src/parser.h:
+
+src/string_piece.h:
+
+src/utf8.h:
+
+src/util.h:
+
+src/vector.h:
