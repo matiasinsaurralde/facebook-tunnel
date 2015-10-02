@@ -1,6 +1,8 @@
 facebook-tunnel
 ===============
 
+[![Join the chat at https://gitter.im/matiasinsaurralde/facebook-tunnel](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/matiasinsaurralde/facebook-tunnel?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The idea of this project is to tunnel Internet traffic through Facebook chat (packets are sent as base64), the main component is tuntap and also the Google's Gumbo parser which does the interaction with Facebook (login, send/receive messages, etc.).
 
 
